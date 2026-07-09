@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Scanner - Convocation Program Entry Management</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <!-- html5-qrcode CDN for scanning QRs using camera in browser -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js" referrerpolicy="no-referrer"></script>
+</head>
+<body>
+
+    <header>
+        <div class="logo-container">
+            <div class="logo-icon">C</div>
+            <span class="logo-text">Convocation 2026</span>
+            <span class="logo-badge">Scanner</span>
+        </div>
+        <div id="nav-right" style="display: flex; align-items: center; gap: 1.5rem;">
+            <!-- Rendered dynamically by common.js -->
+        </div>
+    </header>
+
+    <main style="display: flex; justify-content: center; align-items: center; min-height: calc(100vh - 120px); padding: 1.5rem;">
+        <!-- Compact Center-aligned Scanner Box -->
+        <div class="card" style="width: 100%; max-width: 440px; display: flex; flex-direction: column; gap: 1.25rem; box-shadow: var(--shadow-lg);">
+            <div class="card-title" style="margin-bottom: 0.5rem;">
+                <span>QR Check-in Scanner</span>
+                <span id="scanner-status" style="font-size: 0.8rem; color: var(--text-muted); font-weight: 500;">Initializing camera...</span>
+            </div>
+            
+            <!-- Viewfinder and Camera selection -->
+            <div class="scanner-viewfinder-container" style="border-radius: var(--radius-md); overflow: hidden;">
+                <div id="reader" style="width:100%; background: #000;"></div>
+                <div id="viewfinder-guides" class="viewfinder-overlay" style="display: none;">
+                    <div class="viewfinder-laser"></div>
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 0;">
+                <label for="camera-select">Camera Source</label>
+                <select id="camera-select" style="width: 100%;">
+                    <option value="">Loading camera sources...</option>
+                </select>
+            </div>
+
+            <!-- Fallback manual input in case of camera failure -->
+            <div style="border-top: 1px solid var(--border-color); padding-top: 1.25rem; margin-top: 0.5rem;">
+                <form id="manual-scan-form" style="display: flex; gap: 0.75rem; align-items: flex-end;">
+                    <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                        <label for="manual-id">Manual Register Number</label>
+                        <input type="text" id="manual-id" placeholder="e.g. TRA20CS023" style="width: 100%;" required>
+                    </div>
+                    <button type="submit" class="btn btn-secondary" style="height: 42px; padding: 0 1.25rem;">Verify</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Verification Details Modal Overlay (Hidden by Default) -->
+    <div id="verification-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 450px; padding: 2rem; display: flex; flex-direction: column; align-items: center;">
+            <div class="scanned-user-photo-container" style="margin-bottom: 1rem;">
+                <img id="user-photo" src="" alt="Attendee Photo" class="scanned-user-photo">
+            </div>
+            
+            <h2 id="user-name" style="font-size: 1.5rem; margin-bottom: 0.25rem; text-align: center;">-</h2>
+            <div style="text-align: center; margin-bottom: 1.25rem;">
+                <span id="user-type-badge" class="badge">-</span>
+            </div>
+
+            <div id="status-banner" class="user-status-banner banner-ready" style="text-align: center; font-size: 0.9rem; padding: 0.6rem;">-</div>
+
+            <div class="detail-row" style="width: 100%;">
+                <span class="detail-label">Register Number</span>
+                <span id="detail-admission" class="detail-value">-</span>
+            </div>
+            <div class="detail-row" id="detail-admission-row" style="width: 100%;">
+                <span class="detail-label">Admission Number</span>
+                <span id="detail-admission-val" class="detail-value">-</span>
+            </div>
+            <div class="detail-row" id="detail-dept-row" style="width: 100%;">
+                <span class="detail-label">Department</span>
+                <span id="detail-dept" class="detail-value">-</span>
+            </div>
+            <div class="detail-row" style="width: 100%;">
+                <span class="detail-label">Seat Number</span>
+                <span id="detail-seat" class="detail-value" style="color: var(--accent); font-weight: 700;">-</span>
+            </div>
+            <div class="detail-row" id="detail-link-row" style="width: 100%; display: none;">
+                <span class="detail-label">Linked Student</span>
+                <span id="detail-link" class="detail-value">-</span>
+            </div>
+            <div class="detail-row" id="scanned-at-row" style="width: 100%; display: none;">
+                <span class="detail-label">Checked-in At</span>
+                <span id="detail-scanned-at" class="detail-value">-</span>
+            </div>
+
+            <div style="width: 100%; display: flex; gap: 0.75rem; margin-top: 1.50rem;">
+                <button id="allow-entry-btn" class="btn btn-success btn-block" style="flex: 1.5;">Allow Entry</button>
+                <button id="close-modal-btn" class="btn btn-secondary btn-block" style="flex: 1;">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script imports -->
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/scanner.js"></script>
+</body>
+</html>
