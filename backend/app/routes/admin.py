@@ -147,12 +147,10 @@ def upload_participants(
     col_course = None
     
     for k in keys:
-        if "1st" in k or "first" in k or "guardian 1" in k or "parent 1" in k or "participant (parent/guardian/relative)" in k:
-            if not col_guardian_1 or "1st" in k or "1" in k:
-                col_guardian_1 = k
-        elif "2nd" in k or "second" in k or "guardian 2" in k or "parent 2" in k or "participant (parent/guardian/relative)" in k:
-            if not col_guardian_2 or "2nd" in k or "2" in k:
-                col_guardian_2 = k
+        if "2nd" in k or "second" in k or "guardian 2" in k or "parent 2" in k or ("participant" in k and ("2nd" in k or "2" in k)):
+            col_guardian_2 = k
+        elif "1st" in k or "first" in k or "guardian 1" in k or "parent 1" in k or ("participant" in k and ("1st" in k or "1" in k)):
+            col_guardian_1 = k
         elif "admission" in k or "admn" in k or "adm no" in k:
             col_admission = k
         elif "register" in k or "reg" in k:
@@ -180,19 +178,6 @@ def upload_participants(
             detail=f"Required columns not found. Detected columns: {list(keys)}. We need at least one column for Student Name and one for Register No."
         )
 
-    # Determine starting seat index
-    existing_seats = db.query(User.seat_number).filter(User.seat_number.like("S-%")).all()
-    max_seat_num = 0
-    for (s_num,) in existing_seats:
-        if s_num:
-            match = re.match(r"^S-(\d+)", s_num)
-            if match:
-                val = int(match.group(1))
-                if val > max_seat_num:
-                    max_seat_num = val
-                    
-    seat_counter = max_seat_num + 1
-    
     imported_students = 0
     imported_guardians = 0
     errors = []
@@ -206,31 +191,31 @@ def upload_participants(
             g1_val = r.get(col_guardian_1, "").strip() if col_guardian_1 else ""
             g2_val = r.get(col_guardian_2, "").strip() if col_guardian_2 else ""
             
+            # If only Guardian 2 is filled and Guardian 1 is blank, force Guardian 2 to occupy Guardian 1 (G1) slot
+            if not g1_val and g2_val:
+                g1_val = g2_val
+                g2_val = ""
+                
             if not reg_no or not name:
                 continue
                 
-            # Extract department name (upto square bracket '[')
+            # Clean department name: capitalize, remove text inside (), convert BSC/B.SC to BS
             dept_name = course_val
-            if "[" in course_val:
-                dept_name = course_val.split("[")[0].strip()
-            elif "(" in course_val:
-                dept_name = course_val.split("(")[0].strip()
-            else:
-                dept_name = course_val.strip()
+            dept_name = re.sub(r"\(.*?\)", "", dept_name)
+            dept_name = dept_name.upper()
+            dept_name = re.sub(r"\bBSC\b", "BS", dept_name)
+            dept_name = re.sub(r"\bB\.SC\b", "BS", dept_name)
+            dept_name = re.sub(r"\s+", " ", dept_name).strip()
                 
             # Check if Student already exists in DB
             student = db.query(User).filter(User.register_number == reg_no).first()
             if not student:
-                seat_no = f"S-{seat_counter:04d}"
-                seat_counter += 1
-                
                 student = User(
                     register_number=reg_no,
                     admission_number=admn_no if admn_no else None,
                     name=name,
                     type="student",
-                    department=dept_name if dept_name else None,
-                    seat_number=seat_no
+                    department=dept_name if dept_name else None
                 )
                 db.add(student)
                 db.commit()
@@ -250,7 +235,6 @@ def upload_participants(
             if g1_val:
                 g1_reg = f"{reg_no}-G1"
                 g1_admn = f"{admn_no}-G1" if admn_no else None
-                g1_seat = f"{student.seat_number}-G1" if student.seat_number else None
                 
                 g1 = db.query(User).filter(User.register_number == g1_reg).first()
                 if not g1:
@@ -259,21 +243,18 @@ def upload_participants(
                         admission_number=g1_admn,
                         name=g1_val,
                         type="guardian",
-                        seat_number=g1_seat,
                         linked_student_id=student.id
                     )
                     db.add(g1)
                     imported_guardians += 1
                 else:
                     g1.name = g1_val
-                    g1.seat_number = g1_seat
                 db.commit()
                 
             # Guardian 2
             if g2_val:
                 g2_reg = f"{reg_no}-G2"
                 g2_admn = f"{admn_no}-G2" if admn_no else None
-                g2_seat = f"{student.seat_number}-G2" if student.seat_number else None
                 
                 g2 = db.query(User).filter(User.register_number == g2_reg).first()
                 if not g2:
@@ -282,14 +263,12 @@ def upload_participants(
                         admission_number=g2_admn,
                         name=g2_val,
                         type="guardian",
-                        seat_number=g2_seat,
                         linked_student_id=student.id
                     )
                     db.add(g2)
                     imported_guardians += 1
                 else:
                     g2.name = g2_val
-                    g2.seat_number = g2_seat
                 db.commit()
                 
         except Exception as row_error:

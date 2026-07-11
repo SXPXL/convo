@@ -21,6 +21,10 @@ def seed_database():
         staff_accounts = [
             {"username": "admin", "password": "adminpassword", "role": "admin"},
             {"username": "security1", "password": "securitypassword", "role": "security"},
+            {"username": "security2", "password": "securitypassword", "role": "security"},
+            {"username": "security3", "password": "securitypassword", "role": "security"},
+            {"username": "security4", "password": "securitypassword", "role": "security"},
+            {"username": "security5", "password": "securitypassword", "role": "security"},
             {"username": "depthead_cs", "password": "cspassword", "role": "dept_head"},
             {"username": "depthead_ee", "password": "eepassword", "role": "dept_head"},
         ]

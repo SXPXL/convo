@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 from app.database import Base
 
@@ -14,6 +14,7 @@ class User(Base):
     department = Column(String, nullable=True)  # e.g., 'Computer Science', 'Electrical'
     seat_number = Column(String, unique=True, nullable=True) # Seat allocation (fixed seat number)
     phone = Column(String, nullable=True) # Mobile phone number for calling students
+    is_aligned = Column(Boolean, default=False, nullable=False)
     
     # Self-referential FK for guardian -> student
     linked_student_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)

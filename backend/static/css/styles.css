@@ -1010,3 +1010,22 @@ tr.new-entry-highlight {
     0% { background-color: rgba(16, 185, 129, 0.25); }
     100% { background-color: transparent; }
 }
+
+/* Radio selection indicators for guest alignment */
+.align-photo-card input[type="radio"]:checked + img {
+    border-color: var(--success) !important;
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.4);
+}
+
+.align-photo-card img:hover {
+    border-color: var(--border-color);
+}
+
+.align-name-label:has(input[type="radio"]:checked) {
+    border-color: var(--success) !important;
+    background-color: rgba(16, 185, 129, 0.08) !important;
+}
+
+.align-name-label:hover {
+    border-color: var(--text-muted);
+}

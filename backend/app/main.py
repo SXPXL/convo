@@ -10,6 +10,17 @@ from app.routes.scanner import router as scanner_router
 from app.routes.dashboard import router as dashboard_router
 from app.routes.admin import router as admin_router
 from app.utils.ws_manager import manager
+from sqlalchemy import text
+from app.database import engine
+
+# Automatically alter table to include is_aligned column if missing
+try:
+    with engine.connect() as conn:
+        conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS is_aligned BOOLEAN DEFAULT FALSE"))
+        conn.commit()
+    print("[*] Checked/Applied database schema migration: is_aligned column added successfully.")
+except Exception as e:
+    print(f"[*] Database schema migration warning: {e}")
 
 app = FastAPI(
     title="College Program Entry Management System",
@@ -55,6 +66,10 @@ def get_scanner_page():
 @app.get("/dashboard")
 def get_dashboard_page():
     return FileResponse(os.path.join(templates_dir, "dashboard.html"))
+
+@app.get("/welcome")
+def get_welcome_page():
+    return FileResponse(os.path.join(templates_dir, "welcome.html"))
 
 @app.websocket("/ws/checkins")
 async def websocket_endpoint(websocket: WebSocket):

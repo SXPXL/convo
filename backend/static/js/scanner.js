@@ -34,11 +34,27 @@ document.addEventListener('DOMContentLoaded', async () => {
     const allowEntryBtn = document.getElementById('allow-entry-btn');
     const closeModalBtn = document.getElementById('close-modal-btn');
 
+    // Alignment Container Elements
+    const normalUserContainer = document.getElementById('normal-user-container');
+    const alignmentContainer = document.getElementById('alignment-container');
+    const alignStudentName = document.getElementById('align-student-name');
+    const alignPhotoRadioA = document.getElementById('align-photo-radio-a');
+    const alignPhotoRadioB = document.getElementById('align-photo-radio-b');
+    const alignPhotoImgA = document.getElementById('align-photo-img-a');
+    const alignPhotoImgB = document.getElementById('align-photo-img-b');
+    const alignNameRadioA = document.getElementById('align-name-radio-a');
+    const alignNameRadioB = document.getElementById('align-name-radio-b');
+    const alignNameTextA = document.getElementById('align-name-text-a');
+    const alignNameTextB = document.getElementById('align-name-text-b');
+    const alignSubmitBtn = document.getElementById('align-submit-btn');
+    const alignCancelBtn = document.getElementById('align-cancel-btn');
+
     // State variables
     let html5Qrcode = null;
     let currentCameraId = null;
     let activeAdmissionNumber = null;
     let isProcessing = false;
+    let alignmentData = null; // Stores scanned guest info when alignment is required
 
     // Initialize HTML5 QR Code Scanner
     try {
@@ -189,6 +205,48 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function displayAttendeeModal(user) {
+        if (user.alignment_required) {
+            alignmentData = user;
+            normalUserContainer.style.display = 'none';
+            alignmentContainer.style.display = 'flex';
+            
+            alignStudentName.textContent = user.student_name || 'N/A';
+            
+            // Populate photo option A
+            alignPhotoImgA.src = user.guardians[0].photo_url || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&h=150&fit=crop';
+            alignPhotoRadioA.value = user.guardians[0].photo_url || '';
+            alignPhotoRadioA.checked = false;
+            
+            // Populate photo option B
+            alignPhotoImgB.src = user.guardians[1].photo_url || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&h=150&fit=crop';
+            alignPhotoRadioB.value = user.guardians[1].photo_url || '';
+            alignPhotoRadioB.checked = false;
+            
+            // Populate name option A
+            alignNameTextA.textContent = user.guardians[0].name;
+            alignNameRadioA.value = user.guardians[0].name;
+            alignNameRadioA.checked = false;
+            
+            // Populate name option B
+            alignNameTextB.textContent = user.guardians[1].name;
+            alignNameRadioB.value = user.guardians[1].name;
+            alignNameRadioB.checked = false;
+            
+            // Reset submit button state
+            alignSubmitBtn.disabled = false;
+            alignSubmitBtn.textContent = 'Confirm & Allow Entry';
+            
+            // Trigger modal visibility
+            verificationModal.classList.add('active');
+            scannerStatus.textContent = "Guest alignment required.";
+            return;
+        }
+
+        // Normal flow
+        alignmentData = null;
+        normalUserContainer.style.display = 'flex';
+        alignmentContainer.style.display = 'none';
+
         // Load details
         userName.textContent = user.name;
         detailAdmission.textContent = user.register_number;
@@ -294,6 +352,78 @@ document.addEventListener('DOMContentLoaded', async () => {
             allowEntryBtn.textContent = 'Allow Entry';
         }
     });
+
+    // Align Submit button listener
+    alignSubmitBtn.addEventListener('click', async () => {
+        if (!alignmentData) return;
+        
+        const selectedNameRadio = document.querySelector('input[name="align-name"]:checked');
+        const selectedPhotoRadio = document.querySelector('input[name="align-photo"]:checked');
+        
+        if (!selectedNameRadio || !selectedPhotoRadio) {
+            Modal.show({
+                title: 'Selection Required',
+                message: 'Please select exactly one correct photo and one correct name before confirming entry.',
+                type: 'danger'
+            });
+            return;
+        }
+        
+        alignSubmitBtn.disabled = true;
+        alignSubmitBtn.textContent = 'Registering...';
+        
+        const payload = {
+            scanned_register_number: alignmentData.scanned_user.register_number,
+            selected_name: selectedNameRadio.value,
+            selected_photo_url: selectedPhotoRadio.value
+        };
+        
+        try {
+            const response = await secureFetch('/api/scanner/align-guests', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                // Play successful check-in beep (High pitch welcome beep)
+                playBeep(880, 150);
+                
+                // Show success modal, then reset scanner
+                Modal.show({
+                    title: 'Entry Allowed',
+                    message: `Successfully aligned and checked in:<br><strong>${data.user_name}</strong> (${data.register_number})`,
+                    type: 'success',
+                    onConfirm: () => {
+                        resetScannerUI();
+                    }
+                });
+            } else {
+                Modal.show({
+                    title: 'Alignment Failed',
+                    message: data.detail || 'Could not align guest records.',
+                    type: 'danger'
+                });
+                alignSubmitBtn.disabled = false;
+                alignSubmitBtn.textContent = 'Confirm & Allow Entry';
+            }
+        } catch (err) {
+            Modal.show({
+                title: 'Connection Error',
+                message: 'Could not connect to guest alignment API.',
+                type: 'danger'
+            });
+            alignSubmitBtn.disabled = false;
+            alignSubmitBtn.textContent = 'Confirm & Allow Entry';
+        }
+    });
+    
+    // Align Cancel button listener
+    alignCancelBtn.addEventListener('click', resetScannerUI);
 
     // Close details modal and resume scanner
     closeModalBtn.addEventListener('click', resetScannerUI);

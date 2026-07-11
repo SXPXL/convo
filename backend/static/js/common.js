@@ -232,6 +232,8 @@ function renderNavBar(user) {
     drawerOverlay.className = 'drawer-overlay';
     document.body.appendChild(drawerOverlay);
 
+    const welcomeLink = `<a href="/welcome" class="drawer-nav-item ${window.location.pathname.includes('/welcome') ? 'active' : ''}">👋 Welcome Screen</a>`;
+
     const navDrawer = document.createElement('div');
     navDrawer.id = 'nav-drawer';
     navDrawer.className = 'nav-drawer';
@@ -246,6 +248,7 @@ function renderNavBar(user) {
         <nav class="drawer-nav-links">
             ${dashboardLink}
             ${scannerLink}
+            ${welcomeLink}
         </nav>
     `;
     document.body.appendChild(navDrawer);

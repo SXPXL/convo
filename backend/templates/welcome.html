@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Laurea 2026 | Welcome</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&amp;family=Inter:wght@400;500;600&amp;family=Dancing+Script:wght@700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-container": "#b76dff",
+                        "surface-container-high": "#282a2d",
+                        "on-secondary": "#002e6a",
+                        "surface-tint": "#ddb7ff",
+                        "on-secondary-fixed-variant": "#004395",
+                        "on-secondary-fixed": "#001a42",
+                        "error": "#ffb4ab",
+                        "surface": "#111317",
+                        "inverse-surface": "#e2e2e6",
+                        "surface-bright": "#37393d",
+                        "on-primary-fixed-variant": "#6900b3",
+                        "background": "#0c0e12",
+                        "outline": "#988d9f",
+                        "on-error-container": "#ffdad6",
+                        "on-primary-fixed": "#2c0051",
+                        "on-surface": "#e2e2e6",
+                        "surface-container-lowest": "#0c0e11",
+                        "tertiary": "#4edea3",
+                        "surface-variant": "#333538",
+                        "surface-container-highest": "#333538",
+                        "primary": "#ddb7ff",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "surface-dim": "#111317",
+                        "surface-container": "#1e2023",
+                        "on-surface-variant": "#cfc2d6",
+                        "inverse-primary": "#842bd2",
+                        "outline-variant": "#4d4354",
+                        "tertiary-container": "#00a572",
+                        "on-error": "#690005",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "surface-container-low": "#1a1c1f",
+                        "secondary-container": "#0566d9",
+                        "on-tertiary": "#003824",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "on-tertiary-fixed": "#002113",
+                        "error-container": "#93000a",
+                        "on-secondary-container": "#e6ecff",
+                        "secondary-fixed": "#d8e2ff",
+                        "primary-fixed-dim": "#ddb7ff",
+                        "tertiary-fixed": "#6ffbbe",
+                        "primary-fixed": "#f0dbff",
+                        "inverse-on-surface": "#2f3034",
+                        "secondary": "#adc6ff",
+                        "on-primary-container": "#400071",
+                        "on-background": "#e2e2e6",
+                        "on-primary": "#490080",
+                        "on-tertiary-container": "#00311f",
+                        "gold-main": "#FFD700",
+                        "gold-dark": "#B8860B"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "section-margin": "64px",
+                        "card-gap": "32px",
+                        "unit": "8px",
+                        "container-padding": "40px"
+                    },
+                    "fontFamily": {
+                        "display-lg-mobile": ["Outfit"],
+                        "body-lg": ["Inter"],
+                        "display-lg": ["Outfit"],
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Outfit"],
+                        "label-sm": ["Inter"],
+                        "headline-xl": ["Outfit"],
+                        "cursive": ["Dancing Script", "cursive"]
+                    },
+                    "fontSize": {
+                        "display-lg-mobile": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "body-lg": ["20px", { "lineHeight": "32px", "letterSpacing": "0.01em", "fontWeight": "400" }],
+                        "display-lg": ["84px", { "lineHeight": "96px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "letterSpacing": "0.01em", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "0em", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-xl": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.01em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: radial-gradient(circle at 50% 0%, #1a1f2e 0%, #0c0e12 70%);
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+
+        .glass-card {
+            background: transparent;
+            backdrop-filter: none;
+            border: none;
+            box-shadow: none;
+        }
+
+        .student-name {
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: 0.05em;
+            font-weight: 300;
+        }
+
+        .photo-frame {
+            position: relative;
+            padding: 8px;
+        }
+
+        .photo-frame::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            padding: 2px;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), transparent, rgba(184, 134, 11, 0.2));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+        }
+
+        /* The new border shine effect */
+        .photo-border-shine {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            padding: 2px;
+            background: conic-gradient(from 0deg, transparent 0%, transparent 60%, rgba(255, 215, 0, 1) 80%, #fff 90%, transparent 100%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            z-index: 20;
+        }
+
+        .animate-bloom-in .photo-border-shine {
+            animation: border-spin 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            animation-delay: 0.5s;
+        }
+
+        @keyframes border-spin {
+            0% {
+                transform: rotate(0deg);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            90% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .gold-glow-pulse {
+            position: absolute;
+            inset: -20px;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: 0;
+            animation: pulse-gold 4s infinite ease-in-out;
+        }
+
+        @keyframes pulse-gold {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.4;
+            }
+
+            50% {
+                transform: scale(1.15);
+                opacity: 0.7;
+            }
+        }
+
+        .expansion-wave {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.4) 0%, transparent 80%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            animation: expand-wave 2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        @keyframes expand-wave {
+            0% {
+                transform: scale(0.5);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(3.5);
+                opacity: 0;
+            }
+        }
+
+        .column-glow-interaction {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200%;
+            height: 500px;
+            background: transparent;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+            pointer-events: none;
+        }
+
+        @keyframes bloom-in {
+            0% {
+                transform: translateY(20px) scale(0.9);
+                opacity: 0;
+                filter: blur(10px);
+            }
+
+            100% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+                filter: blur(0px);
+            }
+        }
+
+        @keyframes bloom-out {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+                filter: blur(0px);
+            }
+
+            100% {
+                transform: scale(1.05);
+                opacity: 0;
+                filter: blur(20px);
+            }
+        }
+
+        .animate-bloom-in {
+            animation: bloom-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        .animate-bloom-out {
+            animation: bloom-out 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
+        .shimmer-sweep {
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 3s infinite linear;
+        }
+
+        .column-divider {
+            border-right: 1px solid transparent;
+        }
+
+        .light-leak {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            pointer-events: none;
+        }
+
+        @keyframes shine-sweep {
+            0% {
+                background-position: 200% center;
+            }
+
+            100% {
+                background-position: -200% center;
+            }
+        }
+    </style>
+</head>
+
+<body class="text-on-surface select-none">
+    <!-- Center Header -->
+    <div class="fixed top-12 left-1/2 -translate-x-1/2 z-50 text-center pointer-events-none">
+        <h1 class="font-cursive text-7xl mb-2 drop-shadow-[0_0_25px_rgba(221,183,255,0.2)]"
+            style="background: linear-gradient(to right, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C); -webkit-background-clip: text; background-clip: text; color: transparent; background-size: 200% auto; animation: shine-sweep 6s linear infinite; display: inline-block;">
+            Laurea 2026</h1>
+        <p class="font-display-lg text-lg font-light text-on-surface-variant uppercase tracking-[0.4em] opacity-60">
+            welcomes you</p>
+    </div>
+    <!-- Main Dashboard Grid -->
+    <main
+        class="h-screen pt-20 sm:pt-28 md:pt-36 lg:pt-48 pb-6 md:pb-12 px-4 md:px-12 grid grid-cols-5 gap-0 relative z-20 mx-auto max-w-7xl">
+        <!-- Gate Columns -->
+        <div class="flex flex-col items-center px-4 column-divider h-full relative group" id="gate-1">
+            <div class="light-leak"></div>
+            <div class="column-glow-interaction"></div>
+            <div class="gate-content flex-grow flex flex-col justify-center items-center w-full"></div>
+        </div>
+        <div class="flex flex-col items-center px-4 column-divider h-full relative group" id="gate-2">
+            <div class="light-leak"></div>
+            <div class="column-glow-interaction"></div>
+            <div class="gate-content flex-grow flex flex-col justify-center items-center w-full"></div>
+        </div>
+        <div class="flex flex-col items-center px-4 column-divider h-full relative group" id="gate-3">
+            <div class="light-leak"></div>
+            <div class="column-glow-interaction"></div>
+            <div class="gate-content flex-grow flex flex-col justify-center items-center w-full"></div>
+        </div>
+        <div class="flex flex-col items-center px-4 column-divider h-full relative group" id="gate-4">
+            <div class="light-leak"></div>
+            <div class="column-glow-interaction"></div>
+            <div class="gate-content flex-grow flex flex-col justify-center items-center w-full"></div>
+        </div>
+        <div class="flex flex-col items-center px-4 h-full relative group" id="gate-5">
+            <div class="light-leak"></div>
+            <div class="column-glow-interaction"></div>
+            <div class="gate-content flex-grow flex flex-col justify-center items-center w-full"></div>
+        </div>
+    </main>
+    <script>
+        const TOTAL_GATES = 5;
+        const DISPLAY_DURATION = 5000; // Hold full screen for 5 seconds
+        const STAGGER_DELAY = 250;     // Delay between rendering each profile
+
+        // Global state trackers
+        let globalQueue = [];
+        let activeBatchCount = 0;      // How many profiles are currently on screen (0 to 5)
+        let isHolding = false;         // True if screen is full and counting down the 5s
+        let isFadingOut = false;       // True if current batch is animating out
+        let isProcessing = false;      // True if we are in the 250ms stagger gap
+
+        // Initialize WebSocket connection
+        let socket = null;
+        const reconnectInterval = 3000;
+
+        function connectWebSocket() {
+            const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsUrl = `${wsProtocol}//${window.location.host}/ws/checkins`;
+
+            console.log(`[*] Connecting to WebSocket: ${wsUrl}`);
+            socket = new WebSocket(wsUrl);
+
+            socket.onopen = () => {
+                console.log('[+] WebSocket connected.');
+            };
+
+            socket.onmessage = (event) => {
+                try {
+                    const payload = JSON.parse(event.data);
+                    if (payload.type === 'checkin') {
+                        handleCheckInEvent(payload.data);
+                    }
+                } catch (err) {
+                    console.error('[!] Error parsing WebSocket message:', err);
+                }
+            };
+
+            socket.onclose = () => {
+                console.log('[!] WebSocket connection closed. Attempting reconnect...');
+                setTimeout(connectWebSocket, reconnectInterval);
+            };
+
+            socket.onerror = (error) => {
+                console.error('[!] WebSocket error:', error);
+                socket.close();
+            };
+        }
+
+        // Handle incoming check-in event
+        function handleCheckInEvent(studentData) {
+            // Map incoming data to match the UI fields
+            const student = {
+                name: studentData.name,
+                dept: studentData.department || 'General',
+                image: studentData.photo_url || `https://i.pravatar.cc/400?u=${studentData.register_number}`
+            };
+
+            // Push to the queue and try to process
+            globalQueue.push(student);
+            updateGlobalQueueBadge();
+            processQueue();
+        }
+
+        // Update the visual global queue badge count
+        function updateGlobalQueueBadge() {
+            let badge = document.getElementById('global-queue-badge');
+
+            if (globalQueue.length > 0) {
+                if (!badge) {
+                    badge = document.createElement('div');
+                    badge.id = 'global-queue-badge';
+                    badge.className = "fixed bottom-8 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full bg-surface-container border border-white/10 text-[10px] sm:text-xs font-semibold uppercase tracking-[0.2em] text-on-surface-variant shadow-2xl z-50 animate-pulse";
+                    document.body.appendChild(badge);
+                }
+                badge.textContent = `${globalQueue.length} waiting in queue`;
+                badge.style.display = 'block';
+            } else {
+                if (badge) {
+                    badge.style.display = 'none';
+                }
+            }
+        }
+
+        // Process the queue and place students into available screen slots
+        function processQueue() {
+            // Block execution if we are animating, holding the full batch, or in stagger phase
+            if (isHolding || isFadingOut || isProcessing) return;
+
+            // If the screen is empty, we must wait until a full batch of 5 is ready
+            if (activeBatchCount === 0 && globalQueue.length < TOTAL_GATES) {
+                return;
+            }
+
+            // If the screen is completely full (5 students), check if the next batch is ready to transition
+            if (activeBatchCount >= TOTAL_GATES) {
+                if (globalQueue.length >= TOTAL_GATES) {
+                    flushAndNext();
+                }
+                return;
+            }
+
+            // Otherwise, we are rendering a batch of 5. Take the next student from the queue.
+            isProcessing = true;
+            const student = globalQueue.shift();
+            activeBatchCount++;
+            updateGlobalQueueBadge();
+
+            // Render in the next available column (left to right)
+            renderStudent(activeBatchCount, student);
+
+            // Wait a brief moment to create the visual left-to-right cascade effect
+            setTimeout(() => {
+                isProcessing = false;
+
+                // Did this student fill the final slot (column 5)?
+                if (activeBatchCount >= TOTAL_GATES) {
+                    // Lock the screen for 5 seconds
+                    isHolding = true;
+                    setTimeout(() => {
+                        isHolding = false;
+                        // Time is up. If the next batch of 5 is ready, clear screen immediately
+                        if (globalQueue.length >= TOTAL_GATES) {
+                            flushAndNext();
+                        }
+                    }, DISPLAY_DURATION);
+                } else {
+                    // Continue rendering current batch
+                    processQueue();
+                }
+            }, STAGGER_DELAY);
+        }
+
+        // Fade out current students and reset the board
+        function flushAndNext() {
+            if (isFadingOut) return;
+            isFadingOut = true;
+
+            // Trigger the bloom-out animation for all currently displayed students
+            for (let i = 1; i <= activeBatchCount; i++) {
+                const container = document.querySelector(`#gate-${i} .gate-content`);
+                if (container) {
+                    const activeCheckIn = container.querySelector('.active-check-in');
+                    if (activeCheckIn) {
+                        activeCheckIn.classList.remove('animate-bloom-in');
+                        activeCheckIn.classList.add('animate-bloom-out');
+                        clearColumnGlow(i);
+                    }
+                }
+            }
+
+            // Wait 1.2s for the CSS animation to finish
+            setTimeout(() => {
+                // Clear the DOM completely
+                for (let i = 1; i <= TOTAL_GATES; i++) {
+                    const container = document.querySelector(`#gate-${i} .gate-content`);
+                    if (container) container.innerHTML = '';
+                }
+
+                // Reset state to empty screen
+                activeBatchCount = 0;
+                isFadingOut = false;
+
+                // Immediately start loading the next batch from the queue if ready
+                processQueue();
+            }, 1200);
+        }
+
+        // Create Profile card HTML matching the design tool styles
+        function createProfileHTML(student) {
+            return `
+                <div class="active-check-in w-full flex flex-col items-center animate-bloom-in relative z-30 px-2">
+                    <div class="photo-frame mb-4 lg:mb-10">
+                        <div class="gold-glow-pulse"></div>
+                        <div class="expansion-wave"></div>
+                        <div class="photo-border-shine"></div>
+                        <div class="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-36 lg:h-36 xl:w-44 xl:h-44 rounded-full p-1 lg:p-1.5 bg-[#0c0e12] relative z-10 overflow-hidden shadow-2xl">
+                            <img src="${student.image}" alt="Portrait" class="w-full h-full object-cover rounded-full">
+                            <div class="absolute inset-0 shimmer-sweep"></div>
+                        </div>
+                    </div>
+                    <div class="glass-card w-full max-w-[240px] py-3 lg:py-6 px-2 lg:px-4 rounded-xl text-center border-white/5 shadow-2xl">
+                        <h3 class="student-name text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-on-surface mb-1 lg:mb-2 break-words leading-tight">${student.name}</h3>
+                        <div class="inline-flex mt-1">
+                            <span class="text-[9px] sm:text-[10px] font-semibold text-gold-main/80 uppercase tracking-[0.2em]">${student.dept}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Control column background glow interactions
+        function triggerColumnGlow(gateNum) {
+            const glow = document.querySelector(`#gate-${gateNum} .column-glow-interaction`);
+            if (glow) {
+                glow.style.opacity = '1';
+                setTimeout(() => {
+                    glow.style.opacity = '0.3';
+                }, 1000);
+            }
+        }
+
+        // Clear column glow
+        function clearColumnGlow(gateNum) {
+            const glow = document.querySelector(`#gate-${gateNum} .column-glow-interaction`);
+            if (glow) {
+                glow.style.opacity = '0';
+            }
+        }
+
+        // Render student details
+        function renderStudent(gateNum, student) {
+            const container = document.querySelector(`#gate-${gateNum} .gate-content`);
+            if (!container) return;
+
+            container.innerHTML = createProfileHTML(student);
+            triggerColumnGlow(gateNum);
+        }
+
+        // Start connection on load
+        window.addEventListener('DOMContentLoaded', () => {
+            connectWebSocket();
+        });
+    </script>
+</body>
+
+</html>

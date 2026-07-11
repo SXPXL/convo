@@ -60,46 +60,97 @@
     <!-- Verification Details Modal Overlay (Hidden by Default) -->
     <div id="verification-modal" class="modal-overlay">
         <div class="modal-content" style="max-width: 450px; padding: 2rem; display: flex; flex-direction: column; align-items: center;">
-            <div class="scanned-user-photo-container" style="margin-bottom: 1rem;">
-                <img id="user-photo" src="" alt="Attendee Photo" class="scanned-user-photo">
-            </div>
             
-            <h2 id="user-name" style="font-size: 1.5rem; margin-bottom: 0.25rem; text-align: center;">-</h2>
-            <div style="text-align: center; margin-bottom: 1.25rem;">
-                <span id="user-type-badge" class="badge">-</span>
+            <!-- Normal User Details Container -->
+            <div id="normal-user-container" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+                <div class="scanned-user-photo-container" style="margin-bottom: 1rem;">
+                    <img id="user-photo" src="" alt="Attendee Photo" class="scanned-user-photo">
+                </div>
+                
+                <h2 id="user-name" style="font-size: 1.5rem; margin-bottom: 0.25rem; text-align: center;">-</h2>
+                <div style="text-align: center; margin-bottom: 1.25rem;">
+                    <span id="user-type-badge" class="badge">-</span>
+                </div>
+
+                <div id="status-banner" class="user-status-banner banner-ready" style="text-align: center; font-size: 0.9rem; padding: 0.6rem;">-</div>
+
+                <div class="detail-row" style="width: 100%;">
+                    <span class="detail-label">Register Number</span>
+                    <span id="detail-admission" class="detail-value">-</span>
+                </div>
+                <div class="detail-row" id="detail-admission-row" style="width: 100%;">
+                    <span class="detail-label">Admission Number</span>
+                    <span id="detail-admission-val" class="detail-value">-</span>
+                </div>
+                <div class="detail-row" id="detail-dept-row" style="width: 100%;">
+                    <span class="detail-label">Department</span>
+                    <span id="detail-dept" class="detail-value">-</span>
+                </div>
+                <div class="detail-row" style="width: 100%;">
+                    <span class="detail-label">Seat Number</span>
+                    <span id="detail-seat" class="detail-value" style="color: var(--accent); font-weight: 700;">-</span>
+                </div>
+                <div class="detail-row" id="detail-link-row" style="width: 100%; display: none;">
+                    <span class="detail-label">Linked Student</span>
+                    <span id="detail-link" class="detail-value">-</span>
+                </div>
+                <div class="detail-row" id="scanned-at-row" style="width: 100%; display: none;">
+                    <span class="detail-label">Checked-in At</span>
+                    <span id="detail-scanned-at" class="detail-value">-</span>
+                </div>
+
+                <div style="width: 100%; display: flex; gap: 0.75rem; margin-top: 1.50rem;">
+                    <button id="allow-entry-btn" class="btn btn-success btn-block" style="flex: 1.5;">Allow Entry</button>
+                    <button id="close-modal-btn" class="btn btn-secondary btn-block" style="flex: 1;">Close</button>
+                </div>
             </div>
 
-            <div id="status-banner" class="user-status-banner banner-ready" style="text-align: center; font-size: 0.9rem; padding: 0.6rem;">-</div>
+            <!-- Guest Interactive Alignment Container -->
+            <div id="alignment-container" style="width: 100%; display: none; flex-direction: column; gap: 1.25rem;">
+                <h3 style="font-size: 1.25rem; text-align: center; margin-bottom: 0.25rem; color: var(--accent);">Guest Alignment Required</h3>
+                <p style="font-size: 0.85rem; color: var(--text-secondary); text-align: center; margin-bottom: 0.5rem; line-height: 1.4;">
+                    Please ask the guest for their name and select it. Then, select the photo that matches their face.
+                </p>
+                <div style="font-size: 0.85rem; text-align: center; color: var(--text-muted); margin-bottom: 0.5rem;">
+                    Linked Student: <span id="align-student-name" style="color: var(--text-primary); font-weight: 600;">-</span>
+                </div>
+                
+                <!-- Photos Selection Group -->
+                <div>
+                    <span class="detail-label" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">1. Select Correct Photo:</span>
+                    <div style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 0.5rem;">
+                        <label class="align-photo-card" id="align-photo-card-a">
+                            <input type="radio" name="align-photo" id="align-photo-radio-a" required style="display: none;">
+                            <img id="align-photo-img-a" src="" alt="Photo A" style="width: 110px; height: 110px; border-radius: var(--radius-sm); border: 2px solid transparent; cursor: pointer; object-fit: cover; background: #222;">
+                        </label>
+                        <label class="align-photo-card" id="align-photo-card-b">
+                            <input type="radio" name="align-photo" id="align-photo-radio-b" required style="display: none;">
+                            <img id="align-photo-img-b" src="" alt="Photo B" style="width: 110px; height: 110px; border-radius: var(--radius-sm); border: 2px solid transparent; cursor: pointer; object-fit: cover; background: #222;">
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Names Selection Group -->
+                <div>
+                    <span class="detail-label" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">2. Select Correct Name:</span>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <label class="align-name-label" id="align-name-label-a" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; background: var(--bg-card); border-radius: var(--radius-sm); border: 1px solid var(--border-color); cursor: pointer; width: 100%;">
+                            <input type="radio" name="align-name" id="align-name-radio-a" required style="cursor: pointer;">
+                            <span id="align-name-text-a" style="font-size: 0.95rem; font-weight: 500;">Name A</span>
+                        </label>
+                        <label class="align-name-label" id="align-name-label-b" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; background: var(--bg-card); border-radius: var(--radius-sm); border: 1px solid var(--border-color); cursor: pointer; width: 100%;">
+                            <input type="radio" name="align-name" id="align-name-radio-b" required style="cursor: pointer;">
+                            <span id="align-name-text-b" style="font-size: 0.95rem; font-weight: 500;">Name B</span>
+                        </label>
+                    </div>
+                </div>
 
-            <div class="detail-row" style="width: 100%;">
-                <span class="detail-label">Register Number</span>
-                <span id="detail-admission" class="detail-value">-</span>
-            </div>
-            <div class="detail-row" id="detail-admission-row" style="width: 100%;">
-                <span class="detail-label">Admission Number</span>
-                <span id="detail-admission-val" class="detail-value">-</span>
-            </div>
-            <div class="detail-row" id="detail-dept-row" style="width: 100%;">
-                <span class="detail-label">Department</span>
-                <span id="detail-dept" class="detail-value">-</span>
-            </div>
-            <div class="detail-row" style="width: 100%;">
-                <span class="detail-label">Seat Number</span>
-                <span id="detail-seat" class="detail-value" style="color: var(--accent); font-weight: 700;">-</span>
-            </div>
-            <div class="detail-row" id="detail-link-row" style="width: 100%; display: none;">
-                <span class="detail-label">Linked Student</span>
-                <span id="detail-link" class="detail-value">-</span>
-            </div>
-            <div class="detail-row" id="scanned-at-row" style="width: 100%; display: none;">
-                <span class="detail-label">Checked-in At</span>
-                <span id="detail-scanned-at" class="detail-value">-</span>
+                <div style="width: 100%; display: flex; gap: 0.75rem; margin-top: 1rem;">
+                    <button id="align-submit-btn" class="btn btn-success btn-block" style="flex: 1.5;">Confirm & Allow Entry</button>
+                    <button id="align-cancel-btn" class="btn btn-secondary btn-block" style="flex: 1;">Cancel</button>
+                </div>
             </div>
 
-            <div style="width: 100%; display: flex; gap: 0.75rem; margin-top: 1.50rem;">
-                <button id="allow-entry-btn" class="btn btn-success btn-block" style="flex: 1.5;">Allow Entry</button>
-                <button id="close-modal-btn" class="btn btn-secondary btn-block" style="flex: 1;">Close</button>
-            </div>
         </div>
     </div>
 
