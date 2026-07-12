@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Convocation Program Entry Management</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <style>
+        @media (max-width: 768px) {
+            .grid-cols-2 {
+                grid-template-columns: 1fr !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div id="nav-right" style="display: flex; align-items: center; gap: 1.5rem; width: 100%;">
+            <!-- Rendered dynamically by common.js -->
+        </div>
+    </header>
+
+    <main style="max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem;">
+        <div style="margin-bottom: 2.5rem;">
+            <h1 style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-primary);">⚙️ System Settings</h1>
+            <p style="color: var(--text-secondary); font-size: 0.95rem;">Add, manage, and delete staff accounts (admin, department heads, and security personnel).</p>
+        </div>
+
+        <div class="grid grid-cols-2" style="gap: 2rem; display: grid; grid-template-columns: 1fr 1fr; align-items: start; margin-bottom: 2rem;">
+            <!-- Create Staff Form -->
+            <div class="card" style="padding: 2rem;">
+                <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1.5rem; color: var(--text-primary); border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">Create Staff Account</h3>
+                
+                <form id="add-staff-form" style="display: flex; flex-direction: column; gap: 1.25rem;">
+                    <div class="form-group">
+                        <label for="username" style="display: block; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; margin-bottom: 0.5rem; color: var(--text-secondary);">Username</label>
+                        <input type="text" id="username" placeholder="e.g. security_west" required style="width: 100%; padding: 0.75rem; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary); font-size: 1rem;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password" style="display: block; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; margin-bottom: 0.5rem; color: var(--text-secondary);">Password (Min 6 chars)</label>
+                        <input type="password" id="password" placeholder="••••••••" required style="width: 100%; padding: 0.75rem; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary); font-size: 1rem;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="role" style="display: block; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; margin-bottom: 0.5rem; color: var(--text-secondary);">Role</label>
+                        <select id="role" required style="width: 100%; padding: 0.75rem; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary); font-size: 1rem;">
+                            <option value="security">Security Guard</option>
+                            <option value="dept_head">Department Head</option>
+                            <option value="admin">Administrator</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success" style="width: 100%; padding: 0.85rem; font-size: 1rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; margin-top: 0.5rem;">Create Account</button>
+                </form>
+            </div>
+
+            <!-- Existing Staff List -->
+            <div class="card" style="padding: 2rem; min-height: 380px;">
+                <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1.5rem; color: var(--text-primary); border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">Active Staff Accounts</h3>
+                
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                        <thead>
+                            <tr style="border-bottom: 1px solid var(--border-color);">
+                                <th style="padding: 0.75rem 0.5rem; color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-transform: uppercase;">Username</th>
+                                <th style="padding: 0.75rem 0.5rem; color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-transform: uppercase;">Role</th>
+                                <th style="padding: 0.75rem 0.5rem; text-align: right; color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-transform: uppercase;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="staff-table-body">
+                            <!-- Populated dynamically -->
+                            <tr>
+                                <td colspan="3" style="text-align: center; padding: 2rem; color: var(--text-muted);">Loading staff members...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Script imports -->
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/settings.js"></script>
+</body>
+</html>

@@ -45,14 +45,14 @@ def setup_local_photos(source_folder: str):
             # Map filename suffix to target register_number in database
             # Case 1: ends in -1 or -G1
             if base_name_upper.endswith("-1") or base_name_upper.endswith("-G1"):
-                # e.g., THAYCS034-1 -> THAYCS034-G1
+                # e.g., THAYCS034-1 -> THAYCS034-1
                 clean_base = base_name_upper.split("-")[0]
-                target_reg = f"{clean_base}-G1"
+                target_reg = f"{clean_base}-1"
             # Case 2: ends in -2 or -G2
             elif base_name_upper.endswith("-2") or base_name_upper.endswith("-G2"):
-                # e.g., THAYCS034-2 -> THAYCS034-G2
+                # e.g., THAYCS034-2 -> THAYCS034-2
                 clean_base = base_name_upper.split("-")[0]
-                target_reg = f"{clean_base}-G2"
+                target_reg = f"{clean_base}-2"
             # Case 3: standard student (no suffix)
             else:
                 target_reg = base_name_upper

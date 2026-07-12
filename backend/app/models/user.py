@@ -12,8 +12,6 @@ class User(Base):
     photo_url = Column(String, nullable=True)
     type = Column(String, nullable=False)  # 'student' or 'guardian'
     department = Column(String, nullable=True)  # e.g., 'Computer Science', 'Electrical'
-    seat_number = Column(String, unique=True, nullable=True) # Seat allocation (fixed seat number)
-    phone = Column(String, nullable=True) # Mobile phone number for calling students
     is_aligned = Column(Boolean, default=False, nullable=False)
     
     # Self-referential FK for guardian -> student

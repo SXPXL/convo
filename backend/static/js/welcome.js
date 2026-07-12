@@ -1,6 +1,4 @@
-/**
- * Welcome Page Real-time Monitor & Queue Handler
- */
+const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%239ca3af'><path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/></svg>";
 
 // Gate state tracker
 const gates = {
@@ -168,7 +166,6 @@ function renderStudent(gateNum, student) {
         const typeEl = document.getElementById(`gate-type-${gateNum}`);
         const deptEl = document.getElementById(`gate-dept-${gateNum}`);
         const regEl = document.getElementById(`gate-reg-${gateNum}`);
-        const seatEl = document.getElementById(`gate-seat-${gateNum}`);
         const timeContainer = document.getElementById(`gate-time-container-${gateNum}`);
         const timeEl = document.getElementById(`gate-time-${gateNum}`);
 
@@ -177,7 +174,6 @@ function renderStudent(gateNum, student) {
         typeBadgeEl.style.display = 'block';
         deptEl.style.display = 'block';
         regEl.style.display = 'block';
-        seatEl.style.display = 'block';
         timeContainer.style.display = 'block';
 
         // Update values
@@ -186,7 +182,7 @@ function renderStudent(gateNum, student) {
             photoEl.src = student.photo_url;
         } else {
             // Default elegant avatar
-            photoEl.src = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&h=150&fit=crop';
+            photoEl.src = DEFAULT_AVATAR;
         }
 
         photoEl.classList.add('active-pulse');
@@ -198,7 +194,6 @@ function renderStudent(gateNum, student) {
 
         deptEl.textContent = student.department || 'N/A';
         regEl.textContent = `Reg No: ${student.register_number}`;
-        seatEl.textContent = student.seat_number || 'N/A';
 
         // Check-in time
         const checkInTime = new Date(student.scanned_at || Date.now());

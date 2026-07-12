@@ -33,6 +33,36 @@ def register_staff_member(
         )
     return create_staff(db, staff_in)
 
+@router.get("/staff", response_model=list[StaffResponse])
+def get_all_staff(
+    db: Session = Depends(get_db),
+    current_staff: Staff = Depends(admin_auth)
+):
+    return db.query(Staff).all()
+
+@router.delete("/staff/{staff_id}", status_code=status.HTTP_200_OK)
+def delete_staff_member(
+    staff_id: int,
+    db: Session = Depends(get_db),
+    current_staff: Staff = Depends(admin_auth)
+):
+    if staff_id == current_staff.id:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="You cannot delete your own admin account."
+        )
+    
+    staff = db.query(Staff).filter(Staff.id == staff_id).first()
+    if not staff:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Staff member not found."
+        )
+    
+    db.delete(staff)
+    db.commit()
+    return {"detail": "Staff member deleted successfully."}
+
 @router.post("/user", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 def register_user(
     user_in: UserCreate,
@@ -233,8 +263,8 @@ def upload_participants(
                 
             # Guardian 1
             if g1_val:
-                g1_reg = f"{reg_no}-G1"
-                g1_admn = f"{admn_no}-G1" if admn_no else None
+                g1_reg = f"{reg_no}-1"
+                g1_admn = f"{admn_no}-1" if admn_no else None
                 
                 g1 = db.query(User).filter(User.register_number == g1_reg).first()
                 if not g1:
@@ -253,8 +283,8 @@ def upload_participants(
                 
             # Guardian 2
             if g2_val:
-                g2_reg = f"{reg_no}-G2"
-                g2_admn = f"{admn_no}-G2" if admn_no else None
+                g2_reg = f"{reg_no}-2"
+                g2_admn = f"{admn_no}-2" if admn_no else None
                 
                 g2 = db.query(User).filter(User.register_number == g2_reg).first()
                 if not g2:

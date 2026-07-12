@@ -1,5 +1,53 @@
-/venv
+# Virtual Environment
+venv/
+.venv/
+env/
+ENV/
+
+# Python Byte-code
+__pycache__/
 *.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Environment Secrets
 .env
-__pycache__
-/backend/static/photos
+.env.local
+.env.*.local
+*.env
+
+# Local Databases and Media Uploads
+*.db
+*.sqlite
+*.sqlite3
+/backend/static/photos/
+/backend/static/qrcodes/
+
+# Data Files (Participant Excel Sheets)
+*.xlsx
+*.xls
+*.csv
+
+# Node (Frontend Dependencies & Builds)
+node_modules/
+/frontend/node_modules/
+/frontend/dist/
+/frontend/build/
+.eslintcache
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Scratch scripts
+scratch/

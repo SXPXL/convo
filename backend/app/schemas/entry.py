@@ -24,6 +24,5 @@ class EntryDetailResponse(BaseModel):
     user_type: str
     register_number: str
     admission_number: Optional[str]
-    seat_number: Optional[str]
     photo_url: Optional[str]
     department: Optional[str]

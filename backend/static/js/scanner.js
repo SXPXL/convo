@@ -1,6 +1,4 @@
-/**
- * Scanner Page Logic
- */
+const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%239ca3af'><path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/></svg>";
 
 document.addEventListener('DOMContentLoaded', async () => {
     // 1. Session check
@@ -25,7 +23,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const detailAdmissionRow = document.getElementById('detail-admission-row');
     const detailDept = document.getElementById('detail-dept');
     const detailDeptRow = document.getElementById('detail-dept-row');
-    const detailSeat = document.getElementById('detail-seat');
     const detailLink = document.getElementById('detail-link');
     const detailLinkRow = document.getElementById('detail-link-row');
     const scannedAtRow = document.getElementById('scanned-at-row');
@@ -42,6 +39,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const alignPhotoRadioB = document.getElementById('align-photo-radio-b');
     const alignPhotoImgA = document.getElementById('align-photo-img-a');
     const alignPhotoImgB = document.getElementById('align-photo-img-b');
+    const alignPhotoCardA = document.getElementById('align-photo-card-a');
+    const alignPhotoCardB = document.getElementById('align-photo-card-b');
     const alignNameRadioA = document.getElementById('align-name-radio-a');
     const alignNameRadioB = document.getElementById('align-name-radio-b');
     const alignNameTextA = document.getElementById('align-name-text-a');
@@ -153,7 +152,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Vibrate to notify user
         if (navigator.vibrate) navigator.vibrate(100);
         
-        verifyAttendee(decodedText);
+        const cleanText = decodedText.trim().toUpperCase();
+        verifyAttendee(cleanText);
     }
 
     function onQrCodeScanError(errorMessage) {
@@ -172,8 +172,26 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Verification Logic
     async function verifyAttendee(admissionNumber) {
-        activeAdmissionNumber = admissionNumber;
-        scannerStatus.textContent = `Verifying: ${admissionNumber}...`;
+        const cleanNum = admissionNumber.trim().toUpperCase();
+        activeAdmissionNumber = cleanNum;
+        scannerStatus.textContent = `Verifying: ${cleanNum}...`;
+
+        // Clear previous photos immediately to avoid lag/flashing
+        userPhoto.src = DEFAULT_AVATAR;
+        alignPhotoImgA.src = DEFAULT_AVATAR;
+        alignPhotoImgB.src = DEFAULT_AVATAR;
+
+        // Set loading classes
+        userPhoto.parentElement.classList.add('loading');
+        userPhoto.parentElement.classList.remove('no-photo');
+        if (alignPhotoCardA) {
+            alignPhotoCardA.classList.add('loading');
+            alignPhotoCardA.classList.remove('no-photo');
+        }
+        if (alignPhotoCardB) {
+            alignPhotoCardB.classList.add('loading');
+            alignPhotoCardB.classList.remove('no-photo');
+        }
 
         try {
             const response = await secureFetch(`/api/scanner/user/${admissionNumber}`);
@@ -183,6 +201,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 playBeep(600, 100); // Scan success sound
                 displayAttendeeModal(data);
             } else {
+                userPhoto.parentElement.classList.remove('loading');
+                if (alignPhotoCardA) alignPhotoCardA.classList.remove('loading');
+                if (alignPhotoCardB) alignPhotoCardB.classList.remove('loading');
                 Modal.show({
                     title: 'Verification Error',
                     message: data.detail || 'Attendee record not found.',
@@ -193,6 +214,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 });
             }
         } catch (error) {
+            userPhoto.parentElement.classList.remove('loading');
+            if (alignPhotoCardA) alignPhotoCardA.classList.remove('loading');
+            if (alignPhotoCardB) alignPhotoCardB.classList.remove('loading');
             Modal.show({
                 title: 'Connection Error',
                 message: 'Could not connect to database verification endpoint.',
@@ -213,14 +237,48 @@ document.addEventListener('DOMContentLoaded', async () => {
             alignStudentName.textContent = user.student_name || 'N/A';
             
             // Populate photo option A
-            alignPhotoImgA.src = user.guardians[0].photo_url || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&h=150&fit=crop';
             alignPhotoRadioA.value = user.guardians[0].photo_url || '';
             alignPhotoRadioA.checked = false;
+            if (user.guardians[0].photo_url) {
+                alignPhotoImgA.onload = () => { if (alignPhotoCardA) alignPhotoCardA.classList.remove('loading'); };
+                alignPhotoImgA.onerror = () => {
+                    if (alignPhotoCardA) {
+                        alignPhotoCardA.classList.remove('loading');
+                        alignPhotoCardA.classList.add('no-photo');
+                    }
+                };
+                alignPhotoImgA.src = user.guardians[0].photo_url;
+            } else {
+                alignPhotoImgA.onload = null;
+                alignPhotoImgA.onerror = null;
+                alignPhotoImgA.src = DEFAULT_AVATAR;
+                if (alignPhotoCardA) {
+                    alignPhotoCardA.classList.remove('loading');
+                    alignPhotoCardA.classList.add('no-photo');
+                }
+            }
             
             // Populate photo option B
-            alignPhotoImgB.src = user.guardians[1].photo_url || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&h=150&fit=crop';
             alignPhotoRadioB.value = user.guardians[1].photo_url || '';
             alignPhotoRadioB.checked = false;
+            if (user.guardians[1].photo_url) {
+                alignPhotoImgB.onload = () => { if (alignPhotoCardB) alignPhotoCardB.classList.remove('loading'); };
+                alignPhotoImgB.onerror = () => {
+                    if (alignPhotoCardB) {
+                        alignPhotoCardB.classList.remove('loading');
+                        alignPhotoCardB.classList.add('no-photo');
+                    }
+                };
+                alignPhotoImgB.src = user.guardians[1].photo_url;
+            } else {
+                alignPhotoImgB.onload = null;
+                alignPhotoImgB.onerror = null;
+                alignPhotoImgB.src = DEFAULT_AVATAR;
+                if (alignPhotoCardB) {
+                    alignPhotoCardB.classList.remove('loading');
+                    alignPhotoCardB.classList.add('no-photo');
+                }
+            }
             
             // Populate name option A
             alignNameTextA.textContent = user.guardians[0].name;
@@ -256,10 +314,23 @@ document.addEventListener('DOMContentLoaded', async () => {
         } else {
             detailAdmissionRow.style.display = 'none';
         }
-        detailSeat.textContent = user.seat_number || 'N/A';
+
         
         // Setup profile image (placeholder if none exists)
-        userPhoto.src = user.photo_url || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&h=150&fit=crop';
+        if (user.photo_url) {
+            userPhoto.onload = () => { userPhoto.parentElement.classList.remove('loading'); };
+            userPhoto.onerror = () => {
+                userPhoto.parentElement.classList.remove('loading');
+                userPhoto.parentElement.classList.add('no-photo');
+            };
+            userPhoto.src = user.photo_url;
+        } else {
+            userPhoto.onload = null;
+            userPhoto.onerror = null;
+            userPhoto.src = DEFAULT_AVATAR;
+            userPhoto.parentElement.classList.remove('loading');
+            userPhoto.parentElement.classList.add('no-photo');
+        }
         
         // Reset animations
         userPhoto.className = 'scanned-user-photo';
@@ -431,6 +502,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     function resetScannerUI() {
         // Hide details modal
         verificationModal.classList.remove('active');
+        
+        // Reset photo container classes
+        userPhoto.parentElement.classList.remove('loading', 'no-photo');
+        if (alignPhotoCardA) alignPhotoCardA.classList.remove('loading', 'no-photo');
+        if (alignPhotoCardB) alignPhotoCardB.classList.remove('loading', 'no-photo');
         
         // Reset states
         activeAdmissionNumber = null;

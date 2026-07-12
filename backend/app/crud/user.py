@@ -52,8 +52,6 @@ def create_user(db: Session, user: UserCreate) -> User:
         photo_url=user.photo_url,
         type=user.type,
         department=user.department,
-        seat_number=user.seat_number,
-        phone=user.phone,
         linked_student_id=user.linked_student_id
     )
     db.add(db_user)

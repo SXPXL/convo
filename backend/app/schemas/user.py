@@ -7,8 +7,6 @@ class UserBase(BaseModel):
     name: str = Field(...)
     type: str = Field(..., description="'student' or 'guardian'")
     department: Optional[str] = Field(None, description="Department name for students")
-    seat_number: Optional[str] = Field(None, description="Assigned seat number")
-    phone: Optional[str] = Field(None, description="Student mobile phone number")
     linked_student_id: Optional[int] = Field(None, description="ID of linked student if this is a guardian")
 
 class UserCreate(UserBase):
@@ -20,8 +18,6 @@ class UserUpdate(BaseModel):
     name: Optional[str] = None
     photo_url: Optional[str] = None
     department: Optional[str] = None
-    seat_number: Optional[str] = None
-    phone: Optional[str] = None
     linked_student_id: Optional[int] = None
 
 class UserResponse(UserBase):

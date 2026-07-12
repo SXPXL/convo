@@ -15,17 +15,17 @@ from app.models.user import User
 def fix_orphaned_g2_guardians():
     db = SessionLocal()
     try:
-        # Find all guardians ending in -G2
+        # Find all guardians ending in -2
         g2_guardians = db.query(User).filter(
-            (User.type == "guardian") & (User.register_number.like("%-G2"))
+            (User.type == "guardian") & (User.register_number.like("%-2"))
         ).all()
         
         fixed_count = 0
         print(f"[*] Found {len(g2_guardians)} G2 guardians in the database.")
         
         for g2 in g2_guardians:
-            reg_base = g2.register_number[:-3] # remove '-G2'
-            g1_reg = f"{reg_base}-G1"
+            reg_base = g2.register_number[:-2] # remove '-2'
+            g1_reg = f"{reg_base}-1"
             
             # Check if a G1 guardian already exists for this student
             g1_exists = db.query(User).filter(User.register_number == g1_reg).first()
@@ -36,8 +36,8 @@ def fix_orphaned_g2_guardians():
                 g2.register_number = g1_reg
                 
                 # Also fix admission number if present
-                if g2.admission_number and g2.admission_number.endswith("-G2"):
-                    g2.admission_number = g2.admission_number[:-3] + "-G1"
+                if g2.admission_number and g2.admission_number.endswith("-2"):
+                    g2.admission_number = g2.admission_number[:-2] + "-1"
                     
                 print(f"  [+] Updated single guardian: {old_reg} -> {g1_reg} (Name: {g2.name})")
                 fixed_count += 1

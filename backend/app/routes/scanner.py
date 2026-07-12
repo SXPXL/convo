@@ -28,9 +28,9 @@ def get_scanned_user_details(
 ):
     user = get_user_by_register_number(db, register_number)
     
-    # Fallback lookup: if guest G2 is scanned but not found, try G1
-    if not user and register_number.endswith("-G2"):
-        fallback_reg = register_number[:-3] + "-G1"
+    # Fallback lookup: if guest -2 is scanned but not found, try -1
+    if not user and register_number.endswith("-2"):
+        fallback_reg = register_number[:-2] + "-1"
         user = get_user_by_register_number(db, fallback_reg)
         
     if not user:
@@ -88,7 +88,6 @@ def get_scanned_user_details(
         "photo_url": user.photo_url,
         "type": user.type,
         "department": user.department,
-        "seat_number": user.seat_number,
         "entered": entry is not None,
         "scanned_at": entry.scanned_at.isoformat() if entry else None,
         "linked_student_name": linked_student_name
@@ -102,9 +101,9 @@ async def register_entry(
 ):
     user = get_user_by_register_number(db, register_number)
     
-    # Fallback lookup: if guest G2 is scanned but not found, try G1
-    if not user and register_number.endswith("-G2"):
-        fallback_reg = register_number[:-3] + "-G1"
+    # Fallback lookup: if guest -2 is scanned but not found, try -1
+    if not user and register_number.endswith("-2"):
+        fallback_reg = register_number[:-2] + "-1"
         user = get_user_by_register_number(db, fallback_reg)
         
     if not user:
@@ -136,8 +135,6 @@ async def register_entry(
             "scanned_at": entry.scanned_at.isoformat(),
             "department": user.department,
             "type": user.type,
-            "seat_number": user.seat_number,
-            "phone": user.phone,
             "scanned_by_username": current_staff.username
         }
     })
@@ -156,7 +153,6 @@ async def register_entry(
         user_type=user.type,
         register_number=user.register_number,
         admission_number=user.admission_number,
-        seat_number=user.seat_number,
         photo_url=user.photo_url,
         department=user.department
     )
@@ -241,8 +237,6 @@ async def align_guests(
             "scanned_at": entry.scanned_at.isoformat(),
             "department": user.department,
             "type": user.type,
-            "seat_number": user.seat_number,
-            "phone": user.phone,
             "scanned_by_username": current_staff.username
         }
     })
@@ -261,6 +255,5 @@ async def align_guests(
         "user_type": user.type,
         "register_number": user.register_number,
         "admission_number": user.admission_number,
-        "seat_number": user.seat_number,
         "photo_url": user.photo_url
     }

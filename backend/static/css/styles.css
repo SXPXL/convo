@@ -1029,3 +1029,89 @@ tr.new-entry-highlight {
 .align-name-label:hover {
     border-color: var(--text-muted);
 }
+
+/* Photo Loading and Unavailable Overlays */
+.scanned-user-photo-container {
+    position: relative;
+    display: inline-block;
+}
+
+.scanned-user-photo-container.loading::after {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    border-radius: 50%;
+    border: 4px solid transparent;
+    border-top-color: var(--accent);
+    animation: photo-spin 1s linear infinite;
+    pointer-events: none;
+    box-sizing: border-box;
+}
+
+@keyframes photo-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.scanned-user-photo-container.no-photo::before {
+    content: 'Photo Unavailable';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(11, 13, 16, 0.85);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 0.35rem 0.75rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 10;
+    backdrop-filter: blur(4px);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Alignment photos loading/unavailable */
+.align-photo-card {
+    position: relative;
+    display: inline-block;
+}
+
+.align-photo-card.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: var(--radius-sm);
+    border: 3px solid transparent;
+    border-top-color: var(--accent);
+    animation: photo-spin 1s linear infinite;
+    pointer-events: none;
+    box-sizing: border-box;
+}
+
+.align-photo-card.no-photo::before {
+    content: 'Unavailable';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(11, 13, 16, 0.85);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.65rem;
+    font-weight: 600;
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 10;
+    backdrop-filter: blur(4px);
+}

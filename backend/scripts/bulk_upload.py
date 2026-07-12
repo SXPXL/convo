@@ -90,30 +90,14 @@ def run_bulk_upload(folder_path: str, department_name: str = "General"):
             photo_url = upload_result.get("secure_url")
             print(f"[+] Uploaded to Cloudinary: {photo_url}")
             
-            # Seat allocation logic (Fixed seats)
-            seat_number = None
-            if user_type == "student":
-                seat_number = f"S-{student_seat_counter:04d}"
-                student_seat_counter += 1
-            else:
-                # Guardian gets adjacent seat matching student's seat
-                # Let's find the student's seat number
-                student_user = db.query(User).filter(User.id == linked_student_id).first()
-                if student_user and student_user.seat_number:
-                    suffix = "G1" if filename_key[-1] == '1' else "G2"
-                    seat_number = f"{student_user.seat_number}-{suffix}"
-                else:
-                    # Fallback seat
-                    seat_number = f"G-{student_seat_counter:04d}"
-            
             # Create user in DB
             db_user = User(
+                register_number=admission_number, # Mapping to register_number
                 admission_number=admission_number,
                 name=f"{user_type.capitalize()} of {admission_number}" if user_type == "guardian" else f"Student {admission_number}",
                 photo_url=photo_url,
                 type=user_type,
                 department=department_name if user_type == "student" else None,
-                seat_number=seat_number,
                 linked_student_id=linked_student_id
             )
             
@@ -125,7 +109,7 @@ def run_bulk_upload(folder_path: str, department_name: str = "General"):
             if user_type == "student":
                 processed_students[filename_key] = db_user.id
                 
-            print(f"[+] Saved user '{db_user.name}' with seat '{db_user.seat_number}' to DB.")
+            print(f"[+] Saved user '{db_user.name}' to DB.")
             success_count += 1
             
         except Exception as e:

@@ -181,6 +181,22 @@ function renderNavBar(user) {
     const header = document.querySelector('header');
     if (!header) return;
     
+    if (!user) {
+        header.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <div class="logo-container" style="cursor: pointer;" onclick="window.location.href='/'">
+                    <div class="logo-icon">C</div>
+                    <span class="logo-text">Convocation 2026</span>
+                    <span class="logo-badge">Guest Mode</span>
+                </div>
+            </div>
+            <div>
+                <a href="/login" class="btn btn-secondary" style="text-decoration: none; padding: 0.5rem 1rem; font-size: 0.9rem;">Sign In</a>
+            </div>
+        `;
+        return;
+    }
+    
     let dashboardLink = '';
     let scannerLink = '';
     
@@ -189,6 +205,11 @@ function renderNavBar(user) {
     }
     if (user.role === 'admin' || user.role === 'security') {
         scannerLink = `<a href="/scanner" class="drawer-nav-item ${window.location.pathname.includes('/scanner') ? 'active' : ''}">📷 QR Scanner</a>`;
+    }
+    
+    let settingsLink = '';
+    if (user.role === 'admin') {
+        settingsLink = `<a href="/settings" class="drawer-nav-item ${window.location.pathname.includes('/settings') ? 'active' : ''}">⚙️ Settings</a>`;
     }
 
     header.innerHTML = `
@@ -248,6 +269,7 @@ function renderNavBar(user) {
         <nav class="drawer-nav-links">
             ${dashboardLink}
             ${scannerLink}
+            ${settingsLink}
             ${welcomeLink}
         </nav>
     `;

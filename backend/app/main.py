@@ -1,8 +1,11 @@
 import os
-from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect, Depends, Query, status
 from fastapi.responses import FileResponse, RedirectResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
+from typing import Optional
+from sqlalchemy.orm import Session
+import jwt
 
 from app.config import settings
 from app.routes.auth import router as auth_router
@@ -11,7 +14,8 @@ from app.routes.dashboard import router as dashboard_router
 from app.routes.admin import router as admin_router
 from app.utils.ws_manager import manager
 from sqlalchemy import text
-from app.database import engine
+from app.database import engine, get_db
+from app.models.staff import Staff
 
 # Automatically alter table to include is_aligned column if missing
 try:
@@ -31,7 +35,7 @@ app = FastAPI(
 # CORS middleware for development flexibility
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origin_regex="https?://.*",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -71,8 +75,44 @@ def get_dashboard_page():
 def get_welcome_page():
     return FileResponse(os.path.join(templates_dir, "welcome.html"))
 
+@app.get("/settings")
+def get_settings_page():
+    return FileResponse(os.path.join(templates_dir, "settings.html"))
+
 @app.websocket("/ws/checkins")
-async def websocket_endpoint(websocket: WebSocket):
+async def websocket_endpoint(
+    websocket: WebSocket,
+    token: Optional[str] = Query(None),
+    db: Session = Depends(get_db)
+):
+    # Retrieve access token from query params or cookie
+    token_str = token or websocket.cookies.get("access_token")
+    if not token_str:
+        await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+        return
+        
+    try:
+        # Decode and verify token
+        payload = jwt.decode(token_str, settings.JWT_SECRET, algorithms=["HS256"])
+        if payload.get("type") != "access":
+            await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+            return
+            
+        username = payload.get("sub")
+        if not username:
+            await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+            return
+            
+        # Verify staff exists and has access rights
+        staff = db.query(Staff).filter(Staff.username == username).first()
+        if not staff or staff.role not in ["admin", "security", "dept_head"]:
+            await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+            return
+            
+    except Exception:
+        await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+        return
+
     await manager.connect(websocket)
     try:
         while True:

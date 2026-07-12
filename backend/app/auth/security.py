@@ -96,6 +96,27 @@ async def get_current_staff(request: Request, db: Session = Depends(get_db)) -> 
         )
     return staff
 
+async def get_current_staff_optional(request: Request, db: Session = Depends(get_db)) -> Optional[Staff]:
+    token = request.cookies.get("access_token")
+    if not token:
+        auth_header = request.headers.get("Authorization")
+        if auth_header and auth_header.startswith("Bearer "):
+            token = auth_header.split(" ")[1]
+            
+    if not token:
+        return None
+        
+    payload = decode_token(token, settings.JWT_SECRET)
+    if payload is None or payload.get("type") != "access":
+        return None
+        
+    username = payload.get("sub")
+    if username is None:
+        return None
+        
+    return db.query(Staff).filter(Staff.username == username).first()
+
+
 class RoleChecker:
     def __init__(self, allowed_roles: List[str]):
         self.allowed_roles = allowed_roles

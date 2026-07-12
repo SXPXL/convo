@@ -22,6 +22,26 @@
     </header>
 
     <main>
+        <!-- Admin Import Panel -->
+        <div class="card" id="import-panel" style="margin-bottom: 2rem; display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3 style="font-size: 1.25rem;">Import Attendees</h3>
+                <span class="logo-badge"
+                    style="background: var(--accent-light); color: var(--accent); font-weight: 600; padding: 0.25rem 0.75rem; border-radius: var(--radius-sm); font-size: 0.8rem;">CSV
+                    / XLSX</span>
+            </div>
+            <p style="margin-bottom: 1.5rem; font-size: 0.95rem; color: var(--text-secondary);">Upload an Excel or CSV
+                file to import students and guardians. Suffixes are mapped automatically.</p>
+
+            <form id="import-form" style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                <input type="file" id="import-file-input" accept=".csv, .xlsx, .xls" required
+                    style="background: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 0.5rem; border-radius: var(--radius-sm); color: var(--text-primary); cursor: pointer;">
+                <button type="submit" id="import-submit-btn" class="btn btn-success"
+                    style="padding: 0.65rem 1.25rem;">Upload & Import</button>
+                <div id="import-status" style="font-size: 0.95rem; font-weight: 500; margin-left: 0.5rem;"></div>
+            </form>
+        </div>
+
         <!-- Filter Bar -->
         <div class="filter-bar">
             <div class="filter-item">
@@ -32,7 +52,7 @@
                 </select>
             </div>
 
-            <div class="filter-item">
+            <div class="filter-item" id="type-filter-item">
                 <label for="attendee-type-select">Attendee Type</label>
                 <select id="attendee-type-select" style="width: 100%;">
                     <option value="">All Types (Students & Guardians)</option>
@@ -44,15 +64,19 @@
             <div class="filter-item" style="flex: 1.5;">
                 <label for="search-input">Search Attendees</label>
                 <div style="display: flex; gap: 0.5rem;">
-                    <input type="text" id="search-input" placeholder="Search by name, admission no, seat..."
+                    <input type="text" id="search-input" placeholder="Search by name or admission no..."
                         style="flex: 1;">
                     <button id="clear-search-btn" class="btn btn-secondary" style="padding: 0.5rem 1rem;">Clear</button>
+                    <button id="print-report-btn" class="btn btn-primary"
+                        style="padding: 0.5rem 1.25rem; background: var(--accent); border-color: var(--accent); font-weight: 600; display: flex; align-items: center; gap: 0.35rem;">
+                        <span>🖨️</span> Print Report
+                    </button>
                 </div>
             </div>
         </div>
 
         <!-- Statistics grid -->
-        <div class="grid grid-cols-3" style="margin-bottom: 2rem;">
+        <div class="grid grid-cols-3" id="stats-grid" style="margin-bottom: 2rem;">
             <!-- Total Check-ins -->
             <div class="card stat-card">
                 <div class="stat-info">
@@ -91,7 +115,7 @@
             </div>
 
             <!-- Guardian Check-ins -->
-            <div class="card stat-card">
+            <div class="card stat-card" id="guardian-card">
                 <div class="stat-info">
                     <span
                         style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 500; text-transform: uppercase;">Guardian
@@ -125,11 +149,10 @@
                     <table id="attendees-table">
                         <thead>
                             <tr>
-                                <th style="width: 70px;">Photo</th>
+                                <th>Register No</th>
                                 <th>Admission No</th>
                                 <th>Name</th>
                                 <th>Type</th>
-                                <th>Seat No</th>
                                 <th>Department</th>
                                 <th>Status</th>
                                 <th>Checked-in At</th>
@@ -138,7 +161,7 @@
                         <tbody id="table-body">
                             <!-- Populated dynamically -->
                             <tr>
-                                <td colspan="8" style="text-align: center; padding: 3rem; color: var(--text-muted);">
+                                <td colspan="7" style="text-align: center; padding: 3rem; color: var(--text-muted);">
                                     <div class="spinner" style="margin-bottom: 1rem;"></div>
                                     <div>Loading attendee database...</div>
                                 </td>
@@ -163,9 +186,40 @@
         </div>
     </main>
 
+    <!-- Department Selection Overlay -->
+    <div id="dept-modal-overlay"
+        style="display: none; position: fixed; inset: 0; background: rgba(11, 13, 16, 0.9); backdrop-filter: blur(12px); z-index: 1000; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease;">
+        <div class="card"
+            style="width: 90%; max-width: 480px; padding: 2.5rem; border: 1px solid var(--border-color); box-shadow: var(--shadow-lg); text-align: center; transform: scale(0.95); transition: transform 0.3s ease;"
+            id="dept-modal-content">
+            <div class="logo-icon"
+                style="margin: 0 auto 1.5rem auto; font-size: 2rem; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; background: var(--accent-light); color: var(--accent); border-radius: var(--radius-md);">
+                🎓</div>
+            <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--text-primary);">Select
+                Department</h2>
+            <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 1.75rem; line-height: 1.5;">
+                Please select a department to proceed to the entry management dashboard.</p>
+
+            <div style="text-align: left; margin-bottom: 1.75rem;">
+                <label for="modal-dept-select"
+                    style="display: block; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; tracking-wider; margin-bottom: 0.5rem; color: var(--text-muted);">Department</label>
+                <select id="modal-dept-select"
+                    style="width: 100%; padding: 0.75rem; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary); font-size: 1rem; outline: none; border-color: var(--border-color);">
+                    <option value="">Loading departments...</option>
+                </select>
+            </div>
+
+            <button id="modal-submit-btn" class="btn btn-success"
+                style="width: 100%; padding: 0.85rem; font-size: 1rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;">Proceed
+                to Dashboard</button>
+        </div>
+    </div>
+
     <!-- Script imports -->
     <script src="/static/js/common.js"></script>
     <script src="/static/js/dashboard.js"></script>
 </body>
+
+</html>
 
 </html>
