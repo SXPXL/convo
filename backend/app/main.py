@@ -29,7 +29,10 @@ except Exception as e:
 app = FastAPI(
     title="College Program Entry Management System",
     description="Secure check-in system with QR code scanning and real-time dashboard analytics",
-    version="1.0.0"
+    version="1.0.0",
+    docs_url=None,
+    redoc_url=None,
+    openapi_url=None
 )
 
 # CORS middleware for development flexibility
@@ -56,6 +59,11 @@ os.makedirs(static_dir, exist_ok=True)
 os.makedirs(templates_dir, exist_ok=True)
 
 app.mount("/static", StaticFiles(directory=static_dir), name="static")
+
+# Health check endpoint
+@app.api_route("/health", methods=["GET", "HEAD"])
+def health_check():
+    return {"status": "healthy"}
 
 # HTML Page Routes
 @app.get("/")

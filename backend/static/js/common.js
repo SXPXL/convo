@@ -38,7 +38,7 @@ const Modal = {
 
         // Reset classes
         iconContainer.className = 'modal-icon ' + type;
-        
+
         // Icon content
         if (type === 'success') {
             iconContainer.innerHTML = '✓';
@@ -101,7 +101,7 @@ const Modal = {
 async function secureFetch(url, options = {}) {
     options.credentials = 'include'; // Ensure cookies are sent
     options.headers = options.headers || {};
-    
+
     // Set content type if JSON body
     if (options.body && typeof options.body === 'object' && !(options.body instanceof FormData)) {
         options.headers['Content-Type'] = 'application/json';
@@ -114,7 +114,7 @@ async function secureFetch(url, options = {}) {
         // Auto refresh access token on 401
         if (response.status === 401 && !url.includes('/api/auth/refresh') && !url.includes('/api/auth/login')) {
             console.log('[*] Access token expired, attempting refresh token rotation...');
-            
+
             const refreshRes = await fetch('/api/auth/refresh', {
                 method: 'POST',
                 credentials: 'include'
@@ -151,7 +151,7 @@ async function checkAuthSession(allowedRoles = []) {
         }
 
         const user = await response.json();
-        
+
         // Check role permission
         if (allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {
             Modal.show({
@@ -180,7 +180,7 @@ async function checkAuthSession(allowedRoles = []) {
 function renderNavBar(user) {
     const header = document.querySelector('header');
     if (!header) return;
-    
+
     if (!user) {
         header.innerHTML = `
             <div style="display: flex; align-items: center; gap: 1rem;">
@@ -191,22 +191,22 @@ function renderNavBar(user) {
                 </div>
             </div>
             <div>
-                <a href="/login" class="btn btn-secondary" style="text-decoration: none; padding: 0.5rem 1rem; font-size: 0.9rem;">Sign In</a>
+                
             </div>
         `;
         return;
     }
-    
+
     let dashboardLink = '';
     let scannerLink = '';
-    
+
     if (user.role === 'admin' || user.role === 'dept_head') {
         dashboardLink = `<a href="/dashboard" class="drawer-nav-item ${window.location.pathname.includes('/dashboard') ? 'active' : ''}">📊 Dashboard</a>`;
     }
     if (user.role === 'admin' || user.role === 'security') {
         scannerLink = `<a href="/scanner" class="drawer-nav-item ${window.location.pathname.includes('/scanner') ? 'active' : ''}">📷 QR Scanner</a>`;
     }
-    
+
     let settingsLink = '';
     if (user.role === 'admin') {
         settingsLink = `<a href="/settings" class="drawer-nav-item ${window.location.pathname.includes('/settings') ? 'active' : ''}">⚙️ Settings</a>`;
@@ -227,7 +227,7 @@ function renderNavBar(user) {
         
         <div class="profile-dropdown-container">
             <div class="user-avatar-btn" id="user-avatar-btn">
-                ${user.username.substring(0,2).toUpperCase()}
+                ${user.username.substring(0, 2).toUpperCase()}
             </div>
             
             <div class="profile-dropdown" id="profile-dropdown">
@@ -329,6 +329,6 @@ function renderNavBar(user) {
 function formatDateTime(isoString) {
     if (!isoString) return '-';
     const date = new Date(isoString);
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' ' + 
-           date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' ' +
+        date.toLocaleDateString([], { month: 'short', day: 'numeric' });
 }
