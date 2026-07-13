@@ -212,6 +212,24 @@ function renderNavBar(user) {
         settingsLink = `<a href="/settings" class="drawer-nav-item ${window.location.pathname.includes('/settings') ? 'active' : ''}">⚙️ Settings</a>`;
     }
 
+    const welcomeLink = `<a href="/welcome" class="drawer-nav-item ${window.location.pathname.includes('/welcome') ? 'active' : ''}">👋 Welcome Screen</a>`;
+
+    // Header specific links (desktop navigation)
+    let headerDashboardLink = '';
+    let headerScannerLink = '';
+    let headerSettingsLink = '';
+    
+    if (user.role === 'admin' || user.role === 'dept_head') {
+        headerDashboardLink = `<a href="/dashboard" class="header-nav-item ${window.location.pathname.includes('/dashboard') ? 'active' : ''}">Dashboard</a>`;
+    }
+    if (user.role === 'admin' || user.role === 'security') {
+        headerScannerLink = `<a href="/scanner" class="header-nav-item ${window.location.pathname.includes('/scanner') ? 'active' : ''}">QR Scanner</a>`;
+    }
+    if (user.role === 'admin') {
+        headerSettingsLink = `<a href="/settings" class="header-nav-item ${window.location.pathname.includes('/settings') ? 'active' : ''}">Settings</a>`;
+    }
+    const headerWelcomeLink = `<a href="/welcome" class="header-nav-item ${window.location.pathname.includes('/welcome') ? 'active' : ''}">Welcome Screen</a>`;
+
     header.innerHTML = `
         <div style="display: flex; align-items: center; gap: 1rem;">
             <button id="hamburger-btn" class="hamburger-btn" aria-label="Menu">
@@ -224,6 +242,13 @@ function renderNavBar(user) {
                 <span class="logo-text">Convocation 2026</span>
             </div>
         </div>
+
+        <nav class="header-nav-links">
+            ${headerDashboardLink}
+            ${headerScannerLink}
+            ${headerSettingsLink}
+            ${headerWelcomeLink}
+        </nav>
         
         <div class="profile-dropdown-container">
             <div class="user-avatar-btn" id="user-avatar-btn">
@@ -252,8 +277,6 @@ function renderNavBar(user) {
     drawerOverlay.id = 'drawer-overlay';
     drawerOverlay.className = 'drawer-overlay';
     document.body.appendChild(drawerOverlay);
-
-    const welcomeLink = `<a href="/welcome" class="drawer-nav-item ${window.location.pathname.includes('/welcome') ? 'active' : ''}">👋 Welcome Screen</a>`;
 
     const navDrawer = document.createElement('div');
     navDrawer.id = 'nav-drawer';

@@ -406,13 +406,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 : `Guardian of ${user.linked_student_name || 'Student'}`;
 
             tr.innerHTML = `
-                <td><strong>${user.register_number}</strong></td>
-                <td><strong>${user.admission_number || '-'}</strong></td>
-                <td>${user.name}</td>
-                <td>${typeBadge}</td>
-                <td>${deptText}</td>
-                <td>${statusBadge}</td>
-                <td>${formatDateTime(user.scanned_at)}</td>
+                <td data-label="Register No"><strong>${user.register_number}</strong></td>
+                <td data-label="Admission No"><strong>${user.admission_number || '-'}</strong></td>
+                <td data-label="Name">${user.name}</td>
+                <td data-label="Type">${typeBadge}</td>
+                <td data-label="Department">${deptText}</td>
+                <td data-label="Status">${statusBadge}</td>
+                <td data-label="Checked-in At">${formatDateTime(user.scanned_at)}</td>
             `;
             tableBody.appendChild(tr);
         });
