@@ -144,12 +144,27 @@
         }
 
         @keyframes float-glow {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(60px, 40px) scale(1.1); }
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            50% {
+                transform: translate(60px, 40px) scale(1.1);
+            }
         }
+
         @keyframes float-glow-reverse {
-            0%, 100% { transform: translate(0, 0) scale(1.1); }
-            50% { transform: translate(-50px, -30px) scale(1); }
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1.1);
+            }
+
+            50% {
+                transform: translate(-50px, -30px) scale(1);
+            }
         }
 
         /* Nebula radial glow for placeholder */
@@ -164,12 +179,15 @@
                 transform: translateY(105vh) translateX(0) scale(0.6) rotate(0deg);
                 opacity: 0;
             }
+
             15% {
                 opacity: 0.9;
             }
+
             85% {
                 opacity: 0.9;
             }
+
             100% {
                 transform: translateY(-10vh) translateX(80px) scale(1.2) rotate(360deg);
                 opacity: 0;
@@ -185,11 +203,72 @@
         }
 
         @keyframes float-welcome {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-15px);
+            }
         }
+
         .animate-float {
             animation: float-welcome 6s infinite ease-in-out;
+        }
+
+        /* Fireflies animation style */
+        @keyframes firefly-glow {
+            0%, 100% {
+                opacity: 0.1;
+                transform: scale(0.8) translate(0, 0);
+            }
+            50% {
+                opacity: 0.85;
+                transform: scale(1.2) translate(25px, -20px);
+            }
+        }
+        .firefly {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: firefly-glow infinite ease-in-out;
+            z-index: 1;
+        }
+
+        /* Falling flower petals animation style */
+        @keyframes petal-fall {
+            0% {
+                transform: translateY(-10vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.75;
+            }
+            90% {
+                opacity: 0.75;
+            }
+            100% {
+                transform: translateY(110vh) translateX(120px) rotate(540deg);
+                opacity: 0;
+            }
+        }
+        .petal {
+            position: absolute;
+            pointer-events: none;
+            animation: petal-fall infinite linear;
+            z-index: 1;
+        }
+        .petal-gold {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.65) 0%, rgba(217, 119, 6, 0.65) 100%);
+            border-radius: 100% 0 100% 0;
+            box-shadow: 0 0 8px rgba(251, 191, 36, 0.2);
+        }
+        .petal-purple {
+            background: linear-gradient(135deg, rgba(167, 139, 250, 0.65) 0%, rgba(124, 58, 237, 0.65) 100%);
+            border-radius: 0 100% 0 100%;
+            box-shadow: 0 0 8px rgba(167, 139, 250, 0.2);
         }
 
         .glass-card {
@@ -225,8 +304,17 @@
         }
 
         @keyframes pulse-glow-photo {
-            0%, 100% { transform: scale(1); opacity: 0.5; }
-            50% { transform: scale(1.08); opacity: 0.8; }
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+
+            50% {
+                transform: scale(1.08);
+                opacity: 0.8;
+            }
         }
 
         /* Gorgeous glowing rotating border ring */
@@ -246,9 +334,17 @@
         }
 
         @keyframes border-rotate {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         /* The new border shine effect */
@@ -428,78 +524,86 @@
 </head>
 
 <body class="text-on-surface select-none">
-    <!-- Background glows -->
+    <!-- Background glows and sparkles (Active at all times) -->
     <div class="ambient-glow-1"></div>
     <div class="ambient-glow-2"></div>
+    <div class="absolute inset-0 bg-radial-glow opacity-30 pointer-events-none z-0"></div>
+    <div id="sparkles-container" class="absolute inset-0 overflow-hidden pointer-events-none z-0"></div>
 
     <!-- Hearty Welcome Placeholder Banner -->
-    <div id="welcome-placeholder" class="fixed inset-0 flex flex-col justify-center items-center z-10 text-center transition-opacity duration-1000 ease-in-out opacity-100">
-        <div class="absolute inset-0 bg-radial-glow opacity-40 pointer-events-none"></div>
-        <div id="sparkles-container" class="absolute inset-0 overflow-hidden pointer-events-none"></div>
-        
+    <div id="welcome-placeholder"
+        class="fixed inset-0 flex flex-col justify-center items-center z-10 text-center transition-opacity duration-1000 ease-in-out opacity-100">
         <div class="relative px-6 max-w-5xl animate-float">
-            <!-- Added branding header -->
-            <p class="font-display-lg text-lg md:text-xl font-light text-amber-200/60 uppercase tracking-[0.4em] mb-4">
+            <!-- Enlarged branding header for ceremony name -->
+            <h1
+                class="font-display-lg text-4xl md:text-5xl lg:text-6xl font-semibold text-amber-200 uppercase tracking-[0.45em] mb-6 drop-shadow-[0_0_30px_rgba(251,191,36,0.3)]">
                 Laurea 2026
-            </p>
+            </h1>
             <!-- Added pb-8 to prevent 'y' clipping -->
-            <h2 class="font-cursive text-8xl md:text-9xl lg:text-[10rem] mb-6 pb-8 text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-amber-200 to-yellow-500 drop-shadow-[0_0_45px_rgba(251,191,36,0.4)]">
+            <h2
+                class="font-cursive text-8xl md:text-9xl lg:text-[10rem] mb-6 pb-8 text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-amber-200 to-yellow-500 drop-shadow-[0_0_45px_rgba(251,191,36,0.4)]">
                 Hearty Welcome
             </h2>
-            <div class="h-[2px] w-64 bg-gradient-to-r from-transparent via-amber-400 to-transparent mx-auto my-10"></div>
+            <div class="h-[2px] w-64 bg-gradient-to-r from-transparent via-amber-400 to-transparent mx-auto my-10">
+            </div>
             <!-- Substituted welcome quote -->
-            <p class="font-display-lg text-2xl md:text-3xl lg:text-4xl font-light text-slate-300 tracking-widest leading-relaxed">
+            <p
+                class="font-display-lg text-2xl md:text-3xl lg:text-4xl font-light text-slate-300 tracking-widest leading-relaxed">
                 "Honoring your achievements.<br>
                 <span class="text-amber-300 font-semibold">Celebrating your futures.</span>"
             </p>
         </div>
     </div>
 
-    <!-- Footer Tagline (Shown when displaying students) -->
-    <div id="footer-tagline" class="fixed bottom-12 left-1/2 -translate-x-1/2 z-50 text-center pointer-events-none transition-opacity duration-1000 ease-in-out opacity-0">
-        <p class="font-display-lg text-xl md:text-2xl font-light text-slate-300 tracking-widest leading-relaxed drop-shadow-lg">
-            "The beginning of your STC journey. <span class="text-amber-300 font-semibold">The difference tells the story.</span>"
+    <!-- Top Tagline (Shown at the top when displaying student photos) -->
+    <div id="top-tagline"
+        class="fixed top-36 left-1/2 -translate-x-1/2 z-40 text-center pointer-events-none transition-opacity duration-1000 ease-in-out opacity-0 w-full px-6">
+        <p
+            class="font-display-lg text-xl md:text-2xl lg:text-3xl font-light text-slate-200 tracking-widest leading-relaxed drop-shadow-lg">
+            "The beginning of your STC journey. <span class="text-amber-300 font-semibold">The difference tells the
+                story.</span>"
         </p>
     </div>
 
 
 
     <!-- Center Header (Shown when displaying students) -->
-    <div id="top-header" class="fixed top-12 left-1/2 -translate-x-1/2 z-50 text-center pointer-events-none transition-opacity duration-1000 ease-in-out opacity-0">
+    <div id="top-header"
+        class="fixed top-12 left-1/2 -translate-x-1/2 z-50 text-center pointer-events-none transition-opacity duration-1000 ease-in-out opacity-0">
         <h1 class="font-cursive text-7xl mb-2 drop-shadow-[0_0_25px_rgba(221,183,255,0.2)]"
             style="background: linear-gradient(to right, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C); -webkit-background-clip: text; background-clip: text; color: transparent; background-size: 200% auto; animation: shine-sweep 6s linear infinite; display: inline-block;">
             Laurea 2026</h1>
-        <p class="font-display-lg text-lg font-light text-on-surface-variant uppercase tracking-[0.4em] opacity-60">
-            welcomes you</p>
+        <!-- <p class="font-display-lg text-lg font-light text-on-surface-variant uppercase tracking-[0.4em] opacity-60">
+            welcomes you</p> -->
     </div>
     <!-- Main Dashboard Grid -->
     <main
-        class="h-screen pt-20 sm:pt-28 md:pt-36 lg:pt-48 pb-6 md:pb-12 px-4 md:px-12 grid grid-cols-5 gap-12 relative z-20 mx-auto max-w-[92vw]">
+        class="h-screen pt-24 sm:pt-36 md:pt-48 lg:pt-60 pb-6 md:pb-12 px-4 md:px-12 grid grid-cols-5 gap-12 relative z-20 mx-auto max-w-[92vw]">
         <!-- Gate Columns -->
         <div class="flex flex-col items-center px-4 column-divider h-full relative group" id="gate-1">
             <div class="light-leak"></div>
             <div class="column-glow-interaction"></div>
-            <div class="gate-content flex-grow flex flex-col justify-center items-center w-full"></div>
+            <div class="gate-content flex-grow flex flex-col justify-center items-center w-full pt-16"></div>
         </div>
         <div class="flex flex-col items-center px-4 column-divider h-full relative group" id="gate-2">
             <div class="light-leak"></div>
             <div class="column-glow-interaction"></div>
-            <div class="gate-content flex-grow flex flex-col justify-center items-center w-full"></div>
+            <div class="gate-content flex-grow flex flex-col justify-center items-center w-full pt-16"></div>
         </div>
         <div class="flex flex-col items-center px-4 column-divider h-full relative group" id="gate-3">
             <div class="light-leak"></div>
             <div class="column-glow-interaction"></div>
-            <div class="gate-content flex-grow flex flex-col justify-center items-center w-full"></div>
+            <div class="gate-content flex-grow flex flex-col justify-center items-center w-full pt-16"></div>
         </div>
         <div class="flex flex-col items-center px-4 column-divider h-full relative group" id="gate-4">
             <div class="light-leak"></div>
             <div class="column-glow-interaction"></div>
-            <div class="gate-content flex-grow flex flex-col justify-center items-center w-full"></div>
+            <div class="gate-content flex-grow flex flex-col justify-center items-center w-full pt-16"></div>
         </div>
         <div class="flex flex-col items-center px-4 h-full relative group" id="gate-5">
             <div class="light-leak"></div>
             <div class="column-glow-interaction"></div>
-            <div class="gate-content flex-grow flex flex-col justify-center items-center w-full"></div>
+            <div class="gate-content flex-grow flex flex-col justify-center items-center w-full pt-16"></div>
         </div>
     </main>
     <script>
@@ -543,7 +647,7 @@
 
             socket.onclose = async (event) => {
                 console.log(`[!] WebSocket closed. Code: ${event.code}. Attempting reconnect...`);
-                
+
                 // If rejected due to policy violation (token expired), attempt to refresh token first
                 if (event.code === 1008) {
                     try {
@@ -560,7 +664,7 @@
                         console.error('[!] Failed to refresh session:', e);
                     }
                 }
-                
+
                 setTimeout(connectWebSocket, reconnectInterval);
             };
 
@@ -614,7 +718,7 @@
         function showWelcomePlaceholder(show) {
             const placeholder = document.getElementById('welcome-placeholder');
             const header = document.getElementById('top-header');
-            const tagline = document.getElementById('footer-tagline');
+            const tagline = document.getElementById('top-tagline');
             if (!placeholder) return;
 
             if (show) {
@@ -647,32 +751,63 @@
             }
         }
 
-        // Particle generator for starry sparkles
-        function createSparkles() {
+        // Particle generator for starry sparkles, fireflies, and flower petals
+        function initBackgroundEffects() {
             const container = document.getElementById('sparkles-container');
             if (!container) return;
             container.innerHTML = '';
-            const count = 75; // Increased particle density
-            for (let i = 0; i < count; i++) {
-                const p = document.createElement('div');
-                p.className = 'sparkle-particle';
-                const size = Math.random() * 10 + 4; // Larger particle size range (4 to 14px)
+
+            // 1. Spawn 60 Fireflies (drifting all over the screen)
+            const fireflyCount = 60;
+            for (let i = 0; i < fireflyCount; i++) {
+                const f = document.createElement('div');
+                f.className = 'firefly';
+                const size = Math.random() * 6 + 3; // 3px to 9px
+                const top = Math.random() * 100;
                 const left = Math.random() * 100;
-                const duration = Math.random() * 8 + 8; // 8s to 16s
-                const delay = Math.random() * -15; // start immediately in different animation points
-                p.style.width = `${size}px`;
-                p.style.height = `${size}px`;
+                const duration = Math.random() * 12 + 8; // 8s to 20s
+                const delay = Math.random() * -20;
+                
+                f.style.width = `${size}px`;
+                f.style.height = `${size}px`;
+                f.style.top = `${top}%`;
+                f.style.left = `${left}%`;
+                f.style.animationDuration = `${duration}s`;
+                f.style.animationDelay = `${delay}s`;
+                
+                if (Math.random() > 0.5) {
+                    f.style.background = 'radial-gradient(circle, rgba(251, 191, 36, 0.9) 0%, transparent 80%)';
+                    f.style.boxShadow = '0 0 10px rgba(251, 191, 36, 0.5)';
+                } else {
+                    f.style.background = 'radial-gradient(circle, rgba(167, 139, 250, 0.9) 0%, transparent 80%)';
+                    f.style.boxShadow = '0 0 10px rgba(167, 139, 250, 0.5)';
+                }
+                container.appendChild(f);
+            }
+
+            // 2. Spawn 40 Drifting Flower Petals (falling from top to bottom)
+            const petalCount = 40;
+            for (let i = 0; i < petalCount; i++) {
+                const p = document.createElement('div');
+                const isGold = Math.random() > 0.5;
+                p.className = `petal ${isGold ? 'petal-gold' : 'petal-purple'}`;
+                
+                const width = Math.random() * 16 + 10; // 10px to 26px
+                const height = width * (Math.random() * 0.4 + 1.2); // organic aspect ratio
+                const left = Math.random() * 100;
+                const duration = Math.random() * 15 + 15; // 15s to 30s (slow, floating drift)
+                const delay = Math.random() * -30;
+                
+                p.style.width = `${width}px`;
+                p.style.height = `${height}px`;
                 p.style.left = `${left}%`;
+                p.style.top = `-5%`;
                 p.style.animationDuration = `${duration}s`;
                 p.style.animationDelay = `${delay}s`;
                 
-                if (Math.random() > 0.5) {
-                    p.style.background = 'radial-gradient(circle, rgba(251, 191, 36, 0.9) 0%, transparent 75%)';
-                    p.style.boxShadow = '0 0 12px rgba(251, 191, 36, 0.6)';
-                } else {
-                    p.style.background = 'radial-gradient(circle, rgba(167, 139, 250, 0.9) 0%, transparent 75%)';
-                    p.style.boxShadow = '0 0 12px rgba(167, 139, 250, 0.6)';
-                }
+                // Add minor random skew/rotation in initial render
+                p.style.transform = `rotate(${Math.random() * 360}deg)`;
+                
                 container.appendChild(p);
             }
         }
@@ -812,11 +947,8 @@
                             <div class="absolute inset-0 shimmer-sweep"></div>
                         </div>
                     </div>
-                    <div class="glass-card w-full max-w-[300px] py-4 lg:py-8 px-4 lg:px-6 rounded-2xl text-center border-white/10 shadow-2xl">
-                        <h3 class="student-name text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl text-on-surface mb-2 break-words leading-tight">${student.name}</h3>
-                        <div class="inline-flex mt-1">
-                            <span class="text-[11px] sm:text-xs md:text-sm font-semibold text-amber-300 tracking-[0.25em] uppercase">${student.dept}</span>
-                        </div>
+                    <div class="glass-card w-full max-w-[300px] py-4 lg:py-6 px-4 lg:px-6 rounded-2xl text-center border-white/10 shadow-2xl">
+                        <h3 class="student-name text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl text-on-surface break-words leading-tight">${student.name}</h3>
                     </div>
                 </div>
             `;
@@ -852,7 +984,7 @@
 
         // Start connection on load
         window.addEventListener('DOMContentLoaded', () => {
-            createSparkles();
+            initBackgroundEffects();
             showWelcomePlaceholder(true);
             connectWebSocket();
 
@@ -874,7 +1006,7 @@
                     isHolding = false;
                     isFadingOut = false;
                     isProcessing = false;
-                    
+
                     // Clear the DOM content
                     for (let i = 1; i <= TOTAL_GATES; i++) {
                         const container = document.querySelector(`#gate-${i} .gate-content`);
