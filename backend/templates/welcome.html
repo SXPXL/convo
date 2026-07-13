@@ -109,41 +109,146 @@
     </script>
     <style>
         body {
-            background: radial-gradient(circle at 50% 0%, #1a1f2e 0%, #0c0e12 70%);
+            background: radial-gradient(circle at 50% 50%, #16122d 0%, #08070e 100%);
             overflow: hidden;
             font-family: 'Inter', sans-serif;
             min-height: 100vh;
+            position: relative;
+        }
+
+        /* Ambient glowing nebulas in background */
+        .ambient-glow-1 {
+            position: absolute;
+            top: -10%;
+            left: 15%;
+            width: 60vw;
+            height: 60vw;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.12) 0%, transparent 70%);
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 1;
+            animation: float-glow 20s infinite ease-in-out;
+        }
+
+        .ambient-glow-2 {
+            position: absolute;
+            bottom: -15%;
+            right: 15%;
+            width: 55vw;
+            height: 55vw;
+            background: radial-gradient(circle, rgba(251, 191, 36, 0.08) 0%, transparent 70%);
+            filter: blur(70px);
+            pointer-events: none;
+            z-index: 1;
+            animation: float-glow-reverse 25s infinite ease-in-out;
+        }
+
+        @keyframes float-glow {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(60px, 40px) scale(1.1); }
+        }
+        @keyframes float-glow-reverse {
+            0%, 100% { transform: translate(0, 0) scale(1.1); }
+            50% { transform: translate(-50px, -30px) scale(1); }
+        }
+
+        /* Nebula radial glow for placeholder */
+        .bg-radial-glow {
+            background: radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.22) 0%, rgba(251, 191, 36, 0.08) 45%, transparent 75%);
+            filter: blur(50px);
+        }
+
+        /* Sparkling particle keyframes */
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(105vh) translateX(0) scale(0.6) rotate(0deg);
+                opacity: 0;
+            }
+            15% {
+                opacity: 0.9;
+            }
+            85% {
+                opacity: 0.9;
+            }
+            100% {
+                transform: translateY(-10vh) translateX(80px) scale(1.2) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .sparkle-particle {
+            position: absolute;
+            bottom: -20px;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particleFloat 12s linear infinite;
+        }
+
+        @keyframes float-welcome {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        .animate-float {
+            animation: float-welcome 6s infinite ease-in-out;
         }
 
         .glass-card {
-            background: transparent;
-            backdrop-filter: none;
-            border: none;
-            box-shadow: none;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            border-radius: var(--radius-lg);
         }
 
         .student-name {
             font-family: 'Outfit', sans-serif;
-            letter-spacing: 0.05em;
-            font-weight: 300;
+            letter-spacing: 0.04em;
+            font-weight: 700;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
         }
 
         .photo-frame {
             position: relative;
-            padding: 8px;
+            padding: 12px;
         }
 
-        .photo-frame::before {
-            content: '';
+        /* Glowing backdrop for photo frame */
+        .photo-frame-glow {
+            position: absolute;
+            inset: -15px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(251, 191, 36, 0.35) 0%, rgba(139, 92, 246, 0.15) 50%, transparent 70%);
+            filter: blur(18px);
+            animation: pulse-glow-photo 3s infinite ease-in-out;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes pulse-glow-photo {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.08); opacity: 0.8; }
+        }
+
+        /* Gorgeous glowing rotating border ring */
+        .rotating-border {
             position: absolute;
             inset: 0;
             border-radius: 50%;
-            padding: 2px;
-            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), transparent, rgba(184, 134, 11, 0.2));
+            padding: 3px;
+            background: linear-gradient(135deg, #BF953F, #FCF6BA, #B38728, #f43f5e, #8b5cf6, #AA771C);
+            background-size: 300% 300%;
+            animation: border-rotate 8s linear infinite;
             -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             -webkit-mask-composite: xor;
             mask-composite: exclude;
+            z-index: 2;
+        }
+
+        @keyframes border-rotate {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         /* The new border shine effect */
@@ -323,8 +428,44 @@
 </head>
 
 <body class="text-on-surface select-none">
-    <!-- Center Header -->
-    <div class="fixed top-12 left-1/2 -translate-x-1/2 z-50 text-center pointer-events-none">
+    <!-- Background glows -->
+    <div class="ambient-glow-1"></div>
+    <div class="ambient-glow-2"></div>
+
+    <!-- Hearty Welcome Placeholder Banner -->
+    <div id="welcome-placeholder" class="fixed inset-0 flex flex-col justify-center items-center z-10 text-center transition-opacity duration-1000 ease-in-out opacity-100">
+        <div class="absolute inset-0 bg-radial-glow opacity-40 pointer-events-none"></div>
+        <div id="sparkles-container" class="absolute inset-0 overflow-hidden pointer-events-none"></div>
+        
+        <div class="relative px-6 max-w-5xl animate-float">
+            <!-- Added branding header -->
+            <p class="font-display-lg text-lg md:text-xl font-light text-amber-200/60 uppercase tracking-[0.4em] mb-4">
+                Laurea 2026
+            </p>
+            <!-- Added pb-8 to prevent 'y' clipping -->
+            <h2 class="font-cursive text-8xl md:text-9xl lg:text-[10rem] mb-6 pb-8 text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-amber-200 to-yellow-500 drop-shadow-[0_0_45px_rgba(251,191,36,0.4)]">
+                Hearty Welcome
+            </h2>
+            <div class="h-[2px] w-64 bg-gradient-to-r from-transparent via-amber-400 to-transparent mx-auto my-10"></div>
+            <!-- Substituted welcome quote -->
+            <p class="font-display-lg text-2xl md:text-3xl lg:text-4xl font-light text-slate-300 tracking-widest leading-relaxed">
+                "Honoring your achievements.<br>
+                <span class="text-amber-300 font-semibold">Celebrating your futures.</span>"
+            </p>
+        </div>
+    </div>
+
+    <!-- Footer Tagline (Shown when displaying students) -->
+    <div id="footer-tagline" class="fixed bottom-12 left-1/2 -translate-x-1/2 z-50 text-center pointer-events-none transition-opacity duration-1000 ease-in-out opacity-0">
+        <p class="font-display-lg text-xl md:text-2xl font-light text-slate-300 tracking-widest leading-relaxed drop-shadow-lg">
+            "The beginning of your STC journey. <span class="text-amber-300 font-semibold">The difference tells the story.</span>"
+        </p>
+    </div>
+
+
+
+    <!-- Center Header (Shown when displaying students) -->
+    <div id="top-header" class="fixed top-12 left-1/2 -translate-x-1/2 z-50 text-center pointer-events-none transition-opacity duration-1000 ease-in-out opacity-0">
         <h1 class="font-cursive text-7xl mb-2 drop-shadow-[0_0_25px_rgba(221,183,255,0.2)]"
             style="background: linear-gradient(to right, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C); -webkit-background-clip: text; background-clip: text; color: transparent; background-size: 200% auto; animation: shine-sweep 6s linear infinite; display: inline-block;">
             Laurea 2026</h1>
@@ -333,7 +474,7 @@
     </div>
     <!-- Main Dashboard Grid -->
     <main
-        class="h-screen pt-20 sm:pt-28 md:pt-36 lg:pt-48 pb-6 md:pb-12 px-4 md:px-12 grid grid-cols-5 gap-0 relative z-20 mx-auto max-w-7xl">
+        class="h-screen pt-20 sm:pt-28 md:pt-36 lg:pt-48 pb-6 md:pb-12 px-4 md:px-12 grid grid-cols-5 gap-12 relative z-20 mx-auto max-w-[92vw]">
         <!-- Gate Columns -->
         <div class="flex flex-col items-center px-4 column-divider h-full relative group" id="gate-1">
             <div class="light-leak"></div>
@@ -469,6 +610,73 @@
             }
         }
 
+        // Toggle the cinematic welcome banner visibility
+        function showWelcomePlaceholder(show) {
+            const placeholder = document.getElementById('welcome-placeholder');
+            const header = document.getElementById('top-header');
+            const tagline = document.getElementById('footer-tagline');
+            if (!placeholder) return;
+
+            if (show) {
+                placeholder.style.display = 'flex';
+                void placeholder.offsetWidth; // force reflow
+                placeholder.classList.remove('opacity-0');
+                placeholder.classList.add('opacity-100');
+                if (header) {
+                    header.classList.remove('opacity-100');
+                    header.classList.add('opacity-0');
+                }
+                if (tagline) {
+                    tagline.classList.remove('opacity-100');
+                    tagline.classList.add('opacity-0');
+                }
+            } else {
+                placeholder.classList.remove('opacity-100');
+                placeholder.classList.add('opacity-0');
+                if (header) {
+                    header.classList.remove('opacity-0');
+                    header.classList.add('opacity-100');
+                }
+                if (tagline) {
+                    tagline.classList.remove('opacity-0');
+                    tagline.classList.add('opacity-100');
+                }
+                setTimeout(() => {
+                    placeholder.style.display = 'none';
+                }, 1000);
+            }
+        }
+
+        // Particle generator for starry sparkles
+        function createSparkles() {
+            const container = document.getElementById('sparkles-container');
+            if (!container) return;
+            container.innerHTML = '';
+            const count = 75; // Increased particle density
+            for (let i = 0; i < count; i++) {
+                const p = document.createElement('div');
+                p.className = 'sparkle-particle';
+                const size = Math.random() * 10 + 4; // Larger particle size range (4 to 14px)
+                const left = Math.random() * 100;
+                const duration = Math.random() * 8 + 8; // 8s to 16s
+                const delay = Math.random() * -15; // start immediately in different animation points
+                p.style.width = `${size}px`;
+                p.style.height = `${size}px`;
+                p.style.left = `${left}%`;
+                p.style.animationDuration = `${duration}s`;
+                p.style.animationDelay = `${delay}s`;
+                
+                if (Math.random() > 0.5) {
+                    p.style.background = 'radial-gradient(circle, rgba(251, 191, 36, 0.9) 0%, transparent 75%)';
+                    p.style.boxShadow = '0 0 12px rgba(251, 191, 36, 0.6)';
+                } else {
+                    p.style.background = 'radial-gradient(circle, rgba(167, 139, 250, 0.9) 0%, transparent 75%)';
+                    p.style.boxShadow = '0 0 12px rgba(167, 139, 250, 0.6)';
+                }
+                container.appendChild(p);
+            }
+        }
+
         // Process the queue and place students into available screen slots
         function processQueue() {
             // Block execution if we are animating, holding the full batch, or in stagger phase
@@ -476,15 +684,13 @@
 
             // If the screen is empty, we must wait until a full batch of 5 is ready
             if (activeBatchCount === 0 && globalQueue.length < TOTAL_GATES) {
+                showWelcomePlaceholder(true);
                 return;
             }
 
-            // If the screen is completely full (5 students), check if the next batch is ready to transition
-            if (activeBatchCount >= TOTAL_GATES) {
-                if (globalQueue.length >= TOTAL_GATES) {
-                    flushAndNext();
-                }
-                return;
+            // If we are starting to render a batch, hide placeholder
+            if (activeBatchCount === 0 && globalQueue.length >= TOTAL_GATES) {
+                showWelcomePlaceholder(false);
             }
 
             // Otherwise, we are rendering a batch of 5. Take the next student from the queue.
@@ -502,15 +708,18 @@
 
                 // Did this student fill the final slot (column 5)?
                 if (activeBatchCount >= TOTAL_GATES) {
-                    // Lock the screen for 5 seconds
+                    // Lock the screen for 8 seconds (cinematic display duration)
                     isHolding = true;
                     setTimeout(() => {
                         isHolding = false;
                         // Time is up. If the next batch of 5 is ready, clear screen immediately
                         if (globalQueue.length >= TOTAL_GATES) {
                             flushAndNext();
+                        } else {
+                            // Fade out current batch and transition back to hearty welcome placeholder
+                            flushAndShowWelcome();
                         }
-                    }, DISPLAY_DURATION);
+                    }, 8000);
                 } else {
                     // Continue rendering current batch
                     processQueue();
@@ -553,23 +762,60 @@
             }, 1200);
         }
 
+        // Fade out current students and return to the cinematic welcome banner
+        function flushAndShowWelcome() {
+            if (isFadingOut) return;
+            isFadingOut = true;
+
+            // Trigger the bloom-out animation for all currently displayed students
+            for (let i = 1; i <= activeBatchCount; i++) {
+                const container = document.querySelector(`#gate-${i} .gate-content`);
+                if (container) {
+                    const activeCheckIn = container.querySelector('.active-check-in');
+                    if (activeCheckIn) {
+                        activeCheckIn.classList.remove('animate-bloom-in');
+                        activeCheckIn.classList.add('animate-bloom-out');
+                        clearColumnGlow(i);
+                    }
+                }
+            }
+
+            // Wait 1.2s for the CSS animation to finish
+            setTimeout(() => {
+                // Clear the DOM completely
+                for (let i = 1; i <= TOTAL_GATES; i++) {
+                    const container = document.querySelector(`#gate-${i} .gate-content`);
+                    if (container) container.innerHTML = '';
+                }
+
+                // Reset state to empty screen
+                activeBatchCount = 0;
+                isFadingOut = false;
+
+                // Fade back in the Hearty Welcome screen
+                showWelcomePlaceholder(true);
+            }, 1200);
+        }
+
         // Create Profile card HTML matching the design tool styles
         function createProfileHTML(student) {
             return `
                 <div class="active-check-in w-full flex flex-col items-center animate-bloom-in relative z-30 px-2">
-                    <div class="photo-frame mb-4 lg:mb-10">
+                    <div class="photo-frame mb-4 lg:mb-8">
+                        <div class="photo-frame-glow"></div>
+                        <div class="rotating-border"></div>
                         <div class="gold-glow-pulse"></div>
                         <div class="expansion-wave"></div>
                         <div class="photo-border-shine"></div>
-                        <div class="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-36 lg:h-36 xl:w-44 xl:h-44 rounded-full p-1 lg:p-1.5 bg-[#0c0e12] relative z-10 overflow-hidden shadow-2xl">
+                        <div class="w-40 h-40 sm:w-40 sm:h-40 md:w-48 md:h-48 lg:w-56 lg:h-56 xl:w-64 xl:h-64 2xl:w-70 2xl:h-70 rounded-full p-2 bg-[#08070e] relative z-10 overflow-hidden shadow-2xl border border-white/10">
                             <img src="${student.image}" alt="Portrait" class="w-full h-full object-cover rounded-full">
                             <div class="absolute inset-0 shimmer-sweep"></div>
                         </div>
                     </div>
-                    <div class="glass-card w-full max-w-[240px] py-3 lg:py-6 px-2 lg:px-4 rounded-xl text-center border-white/5 shadow-2xl">
-                        <h3 class="student-name text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-on-surface mb-1 lg:mb-2 break-words leading-tight">${student.name}</h3>
+                    <div class="glass-card w-full max-w-[300px] py-4 lg:py-8 px-4 lg:px-6 rounded-2xl text-center border-white/10 shadow-2xl">
+                        <h3 class="student-name text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl text-on-surface mb-2 break-words leading-tight">${student.name}</h3>
                         <div class="inline-flex mt-1">
-                            <span class="text-[9px] sm:text-[10px] font-semibold text-gold-main/80 uppercase tracking-[0.2em]">${student.dept}</span>
+                            <span class="text-[11px] sm:text-xs md:text-sm font-semibold text-amber-300 tracking-[0.25em] uppercase">${student.dept}</span>
                         </div>
                     </div>
                 </div>
@@ -606,7 +852,41 @@
 
         // Start connection on load
         window.addEventListener('DOMContentLoaded', () => {
+            createSparkles();
+            showWelcomePlaceholder(true);
             connectWebSocket();
+
+            // Run Demo Mode if '?demo=true' is in the URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('demo') === 'true') {
+                console.log("[*] URL parameter 'demo=true' detected. Loading demo batch in 3 seconds...");
+                setTimeout(() => {
+                    const demoStudents = [
+                        { name: "Aria Montgomery", dept: "Computer Science", image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=400&h=400" },
+                        { name: "Ethan Hunt", dept: "Information Technology", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400&h=400" },
+                        { name: "Sophia Loris", dept: "Electronics Engineering", image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=400&h=400" },
+                        { name: "Marcus Aurelius", dept: "Mechanical Engineering", image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=400&h=400" },
+                        { name: "Elena Gilbert", dept: "Biotechnology", image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=400&h=400" }
+                    ];
+                    // Reset screen and queue
+                    globalQueue = [];
+                    activeBatchCount = 0;
+                    isHolding = false;
+                    isFadingOut = false;
+                    isProcessing = false;
+                    
+                    // Clear the DOM content
+                    for (let i = 1; i <= TOTAL_GATES; i++) {
+                        const container = document.querySelector(`#gate-${i} .gate-content`);
+                        if (container) container.innerHTML = '';
+                    }
+
+                    // Push students to queue
+                    demoStudents.forEach(s => globalQueue.push(s));
+                    updateGlobalQueueBadge();
+                    processQueue();
+                }, 3000); // 3-second delay to let the initial sparkles float
+            }
         });
     </script>
 </body>
