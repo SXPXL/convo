@@ -218,7 +218,7 @@ function renderNavBar(user) {
     let headerDashboardLink = '';
     let headerScannerLink = '';
     let headerSettingsLink = '';
-    
+
     if (user.role === 'admin' || user.role === 'dept_head') {
         headerDashboardLink = `<a href="/dashboard" class="header-nav-item ${window.location.pathname.includes('/dashboard') ? 'active' : ''}">Dashboard</a>`;
     }
@@ -351,7 +351,10 @@ function renderNavBar(user) {
 // Format Datetime string helper
 function formatDateTime(isoString) {
     if (!isoString) return '-';
-    const date = new Date(isoString);
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' ' +
-        date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+    let formattedStr = isoString;
+    if (typeof isoString === 'string' && !isoString.endsWith('Z') && !isoString.includes('+') && !isoString.includes('-')) {
+        formattedStr += 'Z';
+    }
+    const date = new Date(formattedStr);
+    return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
 }

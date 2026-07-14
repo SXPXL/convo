@@ -83,6 +83,7 @@ def get_staff_departments(staff: Optional[Staff], db: Session) -> List[str]:
 @router.get("/stats")
 def get_dashboard_stats(
     department: Optional[str] = Query(None),
+    date: Optional[str] = Query(None),
     db: Session = Depends(get_db),
     current_staff: Optional[Staff] = Depends(get_current_staff_optional)
 ):
@@ -118,6 +119,18 @@ def get_dashboard_stats(
         entered_users_query = entered_users_query.filter(User.department.in_(department_filter))
         entered_students_query = entered_students_query.filter(User.department.in_(department_filter))
         entered_guardians_query = entered_guardians_query.filter(User.department.in_(department_filter))
+
+    # Filter by date if provided
+    if date:
+        try:
+            from datetime import date as python_date
+            from sqlalchemy import Date, cast
+            parsed_date = python_date.fromisoformat(date)
+            entered_users_query = entered_users_query.filter(cast(Entry.scanned_at, Date) == parsed_date)
+            entered_students_query = entered_students_query.filter(cast(Entry.scanned_at, Date) == parsed_date)
+            entered_guardians_query = entered_guardians_query.filter(cast(Entry.scanned_at, Date) == parsed_date)
+        except ValueError:
+            pass
         
     total_count = total_users_query.count()
     student_count = total_students_query.count()
@@ -156,6 +169,15 @@ def get_all_departments(
     allowed = get_staff_departments(current_staff, db)
     return {"departments": allowed}
 
+@router.get("/event-dates")
+def get_dashboard_event_dates(
+    db: Session = Depends(get_db),
+    current_staff: Optional[Staff] = Depends(get_current_staff_optional)
+):
+    from sqlalchemy import Date, cast
+    dates_query = db.query(cast(Entry.scanned_at, Date)).distinct().order_by(cast(Entry.scanned_at, Date).asc()).all()
+    return {"dates": [d[0].isoformat() for d in dates_query if d[0]]}
+
 @router.get("/users")
 def get_dashboard_users(
     department: Optional[str] = Query(None),
@@ -163,6 +185,7 @@ def get_dashboard_users(
     type: Optional[str] = Query(None),
     search: Optional[str] = Query(None),
     sort_by: Optional[str] = Query("admission"), # "admission" or "time"
+    date: Optional[str] = Query(None),
     skip: int = Query(0, ge=0),
     limit: int = Query(100, ge=1, le=10000),
     db: Session = Depends(get_db),
@@ -194,6 +217,17 @@ def get_dashboard_users(
             query = query.filter(Entry.id != None)
         else:
             query = query.filter(Entry.id == None)
+
+    # Filter by date if specified
+    if date:
+        try:
+            from datetime import date as python_date
+            from sqlalchemy import Date, cast
+            parsed_date = python_date.fromisoformat(date)
+            # Filter to users who checked in on this date
+            query = query.filter(Entry.id != None).filter(cast(Entry.scanned_at, Date) == parsed_date)
+        except ValueError:
+            pass
             
     if search:
         search_filter = f"%{search}%"
@@ -234,7 +268,7 @@ def get_dashboard_users(
             "type": user.type,
             "department": user.department,
             "entered": entry is not None,
-            "scanned_at": entry.scanned_at.isoformat() if entry else None,
+            "scanned_at": (entry.scanned_at.isoformat() + "Z") if entry else None,
             "linked_student_name": linked_student_name
         })
         

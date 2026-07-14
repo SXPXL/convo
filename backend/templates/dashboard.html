@@ -61,16 +61,20 @@
                 </select>
             </div>
 
-            <div class="filter-item" style="flex: 1.5;">
+            <div class="filter-item">
+                <label for="date-select">Filter by Date</label>
+                <select id="date-select" style="width: 100%;">
+                    <option value="">All Dates</option>
+                    <!-- Populated dynamically -->
+                </select>
+            </div>
+
+            <div class="filter-item" style="flex: 1.5; min-width: 250px;">
                 <label for="search-input">Search Attendees</label>
                 <div style="display: flex; gap: 0.5rem;">
                     <input type="text" id="search-input" placeholder="Search by name or admission no..."
                         style="flex: 1;">
                     <button id="clear-search-btn" class="btn btn-secondary" style="padding: 0.5rem 1rem;">Clear</button>
-                    <button id="print-report-btn" class="btn btn-primary"
-                        style="padding: 0.5rem 1.25rem; background: var(--accent); border-color: var(--accent); font-weight: 600; display: flex; align-items: center; gap: 0.35rem;">
-                        <span>🖨️</span> Print Report
-                    </button>
                 </div>
             </div>
         </div>
@@ -78,18 +82,12 @@
         <!-- Statistics grid -->
         <div class="grid grid-cols-3" id="stats-grid" style="margin-bottom: 2rem;">
             <!-- Total Check-ins -->
-            <div class="card stat-card">
+            <div class="card stat-card" id="total-attendance-card">
                 <div class="stat-info">
                     <span
                         style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 500; text-transform: uppercase;">Total
                         Attendance</span>
                     <span id="stat-total-entered" class="stat-value">0 / 0</span>
-                    <span id="stat-total-percent"
-                        style="font-size: 0.85rem; color: var(--success); font-weight: 600; margin-top: 0.25rem;">0%
-                        Checked-in</span>
-                    <div class="progress-bar-container">
-                        <div id="total-progress-bar" class="progress-bar" style="width: 0%;"></div>
-                    </div>
                 </div>
                 <div class="stat-icon-wrapper" style="background-color: var(--accent-light); color: var(--accent);">📊
                 </div>
@@ -102,13 +100,6 @@
                         style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 500; text-transform: uppercase;">Student
                         Check-ins</span>
                     <span id="stat-students-entered" class="stat-value">0 / 0</span>
-                    <span id="stat-students-percent"
-                        style="font-size: 0.85rem; color: #a78bfa; font-weight: 600; margin-top: 0.25rem;">0%
-                        checked-in</span>
-                    <div class="progress-bar-container">
-                        <div id="students-progress-bar" class="progress-bar" style="width: 0%; background: #a78bfa;">
-                        </div>
-                    </div>
                 </div>
                 <div class="stat-icon-wrapper" style="background-color: rgba(139, 92, 246, 0.15); color: #a78bfa;">🎓
                 </div>
@@ -121,13 +112,6 @@
                         style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 500; text-transform: uppercase;">Guardian
                         Check-ins</span>
                     <span id="stat-guardians-entered" class="stat-value">0 / 0</span>
-                    <span id="stat-guardians-percent"
-                        style="font-size: 0.85rem; color: #60a5fa; font-weight: 600; margin-top: 0.25rem;">0%
-                        checked-in</span>
-                    <div class="progress-bar-container">
-                        <div id="guardians-progress-bar" class="progress-bar" style="width: 0%; background: #60a5fa;">
-                        </div>
-                    </div>
                 </div>
                 <div class="stat-icon-wrapper" style="background-color: rgba(59, 130, 246, 0.15); color: #60a5fa;">👥
                 </div>
@@ -136,11 +120,21 @@
 
         <!-- Dashboard Content Area -->
         <div class="card" style="padding: 0;">
-            <!-- Tabs for filtering entered status -->
-            <div class="tabs" style="padding: 1rem 1.5rem 0; margin-bottom: 0;">
-                <button class="tab active" data-entered="all">All Registered (<span id="count-all">0</span>)</button>
-                <button class="tab" data-entered="true">Checked In (<span id="count-entered">0</span>)</button>
-                <button class="tab" data-entered="false">Not Checked In (<span id="count-not-entered">0</span>)</button>
+            <!-- Tabs and Print row -->
+            <div
+                style="display: flex; align-items: flex-end; justify-content: flex-start; padding: 1rem 1.5rem 0; border-bottom: 1px solid var(--border-color); flex-wrap: wrap; gap: 1rem;">
+                <button id="print-report-btn" class="btn btn-primary"
+                    style="padding: 0.5rem 1rem; background: var(--accent); border-color: var(--accent); font-weight: 600; display: flex; align-items: center; gap: 0.35rem; font-size: 0.85rem; border-radius: var(--radius-sm); margin-bottom: 0.5rem;">
+                    <span>🖨️</span> Print Report
+                </button>
+
+                <div class="tabs" style="border-bottom: none; margin-bottom: 0; padding: 0;">
+                    <button class="tab active" data-entered="all">All Registered (<span
+                            id="count-all">0</span>)</button>
+                    <button class="tab" data-entered="true">Checked In (<span id="count-entered">0</span>)</button>
+                    <button class="tab" data-entered="false">Not Checked In (<span
+                            id="count-not-entered">0</span>)</button>
+                </div>
             </div>
 
             <!-- Table Wrapper -->
@@ -219,4 +213,5 @@
     <script src="/static/js/common.js"></script>
     <script src="/static/js/dashboard.js"></script>
 </body>
+
 </html>

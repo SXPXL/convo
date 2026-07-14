@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     CLOUDINARY_API_SECRET: str = "your_cloudinary_api_secret"
     
     PORT: int = 8000
+    PHOTO_BASE_URL: str = "/static/photos"
 
     model_config = SettingsConfigDict(
         env_file=os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env"),

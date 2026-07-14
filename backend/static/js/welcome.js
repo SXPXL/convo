@@ -196,7 +196,11 @@ function renderStudent(gateNum, student) {
         regEl.textContent = `Reg No: ${student.register_number}`;
 
         // Check-in time
-        const checkInTime = new Date(student.scanned_at || Date.now());
+        let scanTimeStr = student.scanned_at;
+        if (scanTimeStr && typeof scanTimeStr === 'string' && !scanTimeStr.endsWith('Z') && !scanTimeStr.includes('+') && !scanTimeStr.includes('-')) {
+            scanTimeStr += 'Z';
+        }
+        const checkInTime = new Date(scanTimeStr || Date.now());
         timeEl.textContent = checkInTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
         // Remove waiting placeholder styles

@@ -3,6 +3,9 @@ venv/
 .venv/
 env/
 ENV/
+photos/
+MASTER_IMG_CONVO/
+
 
 # Python Byte-code
 __pycache__/

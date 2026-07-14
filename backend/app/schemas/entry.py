@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, field_serializer
 
 class EntryBase(BaseModel):
     user_id: int
@@ -16,6 +16,12 @@ class EntryResponse(EntryBase):
 
     class Config:
         from_attributes = True
+
+    @field_serializer('scanned_at')
+    def serialize_dt(self, dt: datetime, _info):
+        if dt.tzinfo is None:
+            return dt.isoformat() + "Z"
+        return dt.isoformat()
         
 class EntryDetailResponse(BaseModel):
     message: str

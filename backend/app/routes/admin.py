@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
+from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File, Query
 from sqlalchemy.orm import Session
 import io
 import csv
@@ -322,3 +322,186 @@ def reset_all_entries(
     db.query(Entry).delete()
     db.commit()
     return {"message": "All check-in entries have been successfully cleared."}
+
+@router.get("/students")
+def search_students(
+    q: str = Query("", description="Search query by name or register number"),
+    db: Session = Depends(get_db),
+    current_staff: Staff = Depends(admin_auth)
+):
+    query = db.query(User).filter(User.type == "student")
+    if q:
+        search_filter = f"%{q}%"
+        query = query.filter(
+            (User.name.ilike(search_filter)) | (User.register_number.ilike(search_filter))
+        )
+    students = query.limit(50).all()
+    
+    result = []
+    for s in students:
+        # Find guests linked to this student
+        guests = db.query(User).filter(User.type == "guardian", User.linked_student_id == s.id).all()
+        guest1 = next((g for g in guests if g.register_number.endswith("-1")), None)
+        guest2 = next((g for g in guests if g.register_number.endswith("-2")), None)
+        result.append({
+            "id": s.id,
+            "name": s.name,
+            "register_number": s.register_number,
+            "admission_number": s.admission_number,
+            "department": s.department,
+            "guest1_name": guest1.name if guest1 else "",
+            "guest2_name": guest2.name if guest2 else ""
+        })
+    return result
+
+@router.post("/students")
+def create_student(
+    payload: dict,
+    db: Session = Depends(get_db),
+    current_staff: Staff = Depends(admin_auth)
+):
+    name = payload.get("name")
+    register_number = payload.get("register_number")
+    admission_number = payload.get("admission_number")
+    department = payload.get("department")
+    guest1_name = payload.get("guest1_name")
+    guest2_name = payload.get("guest2_name")
+    
+    if not name or not register_number or not department:
+        raise HTTPException(status_code=400, detail="Name, Register Number, and Department/Course are required.")
+        
+    # Check duplicate student register number
+    existing = db.query(User).filter(User.register_number == register_number).first()
+    if existing:
+        raise HTTPException(status_code=400, detail="Student with this register number already exists.")
+        
+    student = User(
+        name=name,
+        register_number=register_number,
+        admission_number=admission_number or None,
+        department=department,
+        type="student"
+    )
+    db.add(student)
+    db.commit()
+    db.refresh(student)
+    
+    # Guest 1
+    if guest1_name:
+        g1_reg = f"{register_number}-1"
+        g1_admn = f"{admission_number}-1" if admission_number else None
+        # Clean any legacy left-over with this register number
+        db.query(User).filter(User.register_number == g1_reg).delete()
+        g1 = User(
+            name=guest1_name,
+            register_number=g1_reg,
+            admission_number=g1_admn,
+            type="guardian",
+            linked_student_id=student.id
+        )
+        db.add(g1)
+        
+    # Guest 2
+    if guest2_name:
+        g2_reg = f"{register_number}-2"
+        g2_admn = f"{admission_number}-2" if admission_number else None
+        # Clean any legacy left-over with this register number
+        db.query(User).filter(User.register_number == g2_reg).delete()
+        g2 = User(
+            name=guest2_name,
+            register_number=g2_reg,
+            admission_number=g2_admn,
+            type="guardian",
+            linked_student_id=student.id
+        )
+        db.add(g2)
+        
+    db.commit()
+    return {"message": "Student created successfully.", "student_id": student.id}
+
+@router.put("/students/{student_id}")
+def update_student(
+    student_id: int,
+    payload: dict,
+    db: Session = Depends(get_db),
+    current_staff: Staff = Depends(admin_auth)
+):
+    student = db.query(User).filter(User.id == student_id, User.type == "student").first()
+    if not student:
+        raise HTTPException(status_code=404, detail="Student not found.")
+        
+    name = payload.get("name")
+    register_number = payload.get("register_number")
+    admission_number = payload.get("admission_number")
+    department = payload.get("department")
+    guest1_name = payload.get("guest1_name")
+    guest2_name = payload.get("guest2_name")
+    
+    if not name or not register_number or not department:
+        raise HTTPException(status_code=400, detail="Name, Register Number, and Department/Course are required.")
+        
+    # Check duplicate register number
+    dup = db.query(User).filter(User.register_number == register_number, User.id != student_id).first()
+    if dup:
+        raise HTTPException(status_code=400, detail="Register number already in use by another user.")
+        
+    student.name = name
+    student.register_number = register_number
+    student.admission_number = admission_number or None
+    student.department = department
+    
+    # Query current guests
+    guests = db.query(User).filter(User.type == "guardian", User.linked_student_id == student_id).all()
+    g1 = next((g for g in guests if g.register_number.endswith("-1")), None)
+    g2 = next((g for g in guests if g.register_number.endswith("-2")), None)
+    
+    g1_reg = f"{register_number}-1"
+    g1_admn = f"{admission_number}-1" if admission_number else None
+    
+    g2_reg = f"{register_number}-2"
+    g2_admn = f"{admission_number}-2" if admission_number else None
+    
+    # Handle Guest 1
+    if guest1_name:
+        if g1:
+            g1.name = guest1_name
+            g1.register_number = g1_reg
+            g1.admission_number = g1_admn
+        else:
+            # Clean any legacy left-over with this register number
+            db.query(User).filter(User.register_number == g1_reg).delete()
+            g1 = User(
+                name=guest1_name,
+                register_number=g1_reg,
+                admission_number=g1_admn,
+                type="guardian",
+                linked_student_id=student_id
+            )
+            db.add(g1)
+    else:
+        if g1:
+            db.delete(g1)
+            
+    # Handle Guest 2
+    if guest2_name:
+        if g2:
+            g2.name = guest2_name
+            g2.register_number = g2_reg
+            g2.admission_number = g2_admn
+        else:
+            # Clean any legacy left-over with this register number
+            db.query(User).filter(User.register_number == g2_reg).delete()
+            g2 = User(
+                name=guest2_name,
+                register_number=g2_reg,
+                admission_number=g2_admn,
+                type="guardian",
+                linked_student_id=student_id
+            )
+            db.add(g2)
+    else:
+        if g2:
+            db.delete(g2)
+            
+    db.commit()
+    return {"message": "Student updated successfully."}

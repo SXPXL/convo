@@ -89,7 +89,7 @@ def get_scanned_user_details(
         "type": user.type,
         "department": user.department,
         "entered": entry is not None,
-        "scanned_at": entry.scanned_at.isoformat() if entry else None,
+        "scanned_at": (entry.scanned_at.isoformat() + "Z") if entry else None,
         "linked_student_name": linked_student_name
     }
 
@@ -132,7 +132,7 @@ async def register_entry(
             "name": user.name,
             "photo_url": user.photo_url,
             "entered": True,
-            "scanned_at": entry.scanned_at.isoformat(),
+            "scanned_at": entry.scanned_at.isoformat() + "Z",
             "department": user.department,
             "type": user.type,
             "scanned_by_username": current_staff.username
@@ -234,7 +234,7 @@ async def align_guests(
             "name": user.name,
             "photo_url": user.photo_url,
             "entered": True,
-            "scanned_at": entry.scanned_at.isoformat(),
+            "scanned_at": entry.scanned_at.isoformat() + "Z",
             "department": user.department,
             "type": user.type,
             "scanned_by_username": current_staff.username
@@ -247,7 +247,7 @@ async def align_guests(
         "entry": {
             "user_id": entry.user_id,
             "id": entry.id,
-            "scanned_at": entry.scanned_at.isoformat(),
+            "scanned_at": entry.scanned_at.isoformat() + "Z",
             "scanned_by": entry.scanned_by,
             "status": entry.status
         },
